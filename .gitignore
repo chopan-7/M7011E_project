@@ -1,0 +1,5 @@
+# Filetype
+*.db
+
+# node modules
+/node_modules
