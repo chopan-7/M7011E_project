@@ -1,5 +1,2 @@
 #ignore database-files
 *.db 
-
-#ignore node_modules
-/node_modules
