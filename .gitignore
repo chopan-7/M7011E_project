@@ -1,0 +1,8 @@
+#ignore database-files
+*.db 
+
+#ignore node_modules
+/node_modules
+
+#ignore .DS-files
+.DS_store
