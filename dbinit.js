@@ -12,6 +12,7 @@ const UserSettings = require('./api/db/UserSettings')
 const ManagerSettings = require('./api/db/ManagerSettings')
 const Role = require('./api/db/Role')
 const State = require('./api/db/State')
+const Weather = require('./api/db/Weather')
 
 
 function main(){
@@ -23,6 +24,7 @@ function main(){
     const managerSettings = new ManagerSettings(dao)
     const role = new Role(dao)
     const state = new State(dao)
+    const weather = new Weather(dao)
 
 
     // Create a new database-file if not exist
@@ -39,13 +41,6 @@ function main(){
     } catch(err) {
         console.error(err);
     }
-
-    // create tables if not exists
-    users.createTable()
-    userSettings.createTable()
-    managerSettings.createTable()
-    role.createTable()
-    state.createTable()
 }
 
 main()
