@@ -6,11 +6,27 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bluebird": "^3.7.2",
+    "compute-erf": "^3.0.3",
+    "compute-erfinv": "^3.0.1",
+    "compute-mean": "^3.0.0",
+    "compute-median": "^2.0.0",
     "cookie-parser": "~1.4.4",
+    "csvtojson": "^2.0.10",
     "debug": "~2.6.9",
+    "distributions-normal": "^2.0.2",
     "express": "~4.16.1",
+    "fs": "0.0.1-security",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "sqlite3": "^5.0.0"
+    "express-graphql": "^0.12.0",
+    "gaussian": "^1.1.0",
+    "graphql": "^15.4.0",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "node-fetch": "^2.6.1"
   }
 }
