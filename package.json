@@ -15,9 +15,12 @@
     "debug": "~2.6.9",
     "distributions-normal": "^2.0.2",
     "express": "~4.16.1",
+    "express-graphql": "^0.12.0",
     "gaussian": "^1.1.0",
+    "graphql": "^15.4.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "node-fetch": "^2.6.1"
   }
 }
