@@ -20,7 +20,7 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.0",
     "express-graphql": "^0.12.0",
     "gaussian": "^1.1.0",
     "graphql": "^15.4.0",
