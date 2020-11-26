@@ -1,5 +1,8 @@
-# Filetype
-*.db
+#ignore database-files
+*.db 
 
-# node modules
+#ignore node_modules
 /node_modules
+
+#ignore .DS-files
+.DS_store
