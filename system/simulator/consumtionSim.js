@@ -1,5 +1,5 @@
 // Simulation calss for household electricity consumption
-var Normal = require('./normaldist')
+const Normal = require('./normaldist')
  
 class Consumption {
     // The constructor takes minimum and maxconsumption as parameter

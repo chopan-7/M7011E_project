@@ -4,8 +4,30 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var { graphqlHTTP } = require('express-graphql');
+var { buildSchema } = require('graphql');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
+// simulator GQL
+var sim = require('./system/simulator/simulator')
+
+var simulatorSchema = buildSchema(`
+  type Simulator {
+    getConsumption: [Float!]
+  }
+
+  type Query {
+    simulate: Simulator
+  }
+`);
+
+var simulatorRoot = {
+  simulate: ({}) => {
+    return new sim();
+  }
+}
 
 var app = express();
 
@@ -21,6 +43,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+
+app.use('/graphql', graphqlHTTP({
+  schema: simulatorSchema,
+  rootValue: simulatorRoot,
+  graphiql: true,
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
