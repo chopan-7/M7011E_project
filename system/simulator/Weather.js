@@ -15,7 +15,7 @@ class Weather{
     }
     //get a random date from data sort all winds from that date
     getDate(){
-        this.date = this.data[intBetween(0, this.data.length)].Datum
+        this.date = this.data[this.intBetween(0, this.data.length)].Datum
         for (var i = 0; i <this.data.length; i++){
             if (this.data[i].Datum == this.date){
                 this.winds.push(parseFloat(this.data[i].Vindhastighet))
@@ -26,10 +26,10 @@ class Weather{
     }
     //get a list of simulated winds for 24h
     getWind(){
-        simwinds=[];
-        min = this.winds[0]
-        max = this.winds[winds.length-1]
-        wind = intBetween(min, max+1)
+        var simwinds= new Array();
+        var min = this.winds[0]
+        var max = this.winds[this.winds.length-1]
+        var wind = this.intBetween(min, max+1)
 
         for (var j = 0; j <24; j++){
             min = wind - 2
@@ -37,14 +37,14 @@ class Weather{
             if (min<0){
                 min = 0
             }
-            skew = 1
+            var skew = 1
             wind = this.normal.randn_bm(min, max, skew)
             
             simwinds.push(wind)
             
         }  
         return simwinds
-        
+
     }
 }
 

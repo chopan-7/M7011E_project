@@ -11,11 +11,15 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 // simulator GQL
-var sim = require('./system/simulator/simulator')
+const sim = require('./system/simulator/simulator')
+const simulator = new sim()
+
 
 var simulatorSchema = buildSchema(`
   type Simulator {
-    getConsumption: [Float!]
+    getConsumption: [Float!],
+    getWind: [Float!],
+    getSuggestedPrice: Float!
   }
 
   type Query {
@@ -25,7 +29,7 @@ var simulatorSchema = buildSchema(`
 
 var simulatorRoot = {
   simulate: ({}) => {
-    return new sim();
+    return simulator;
   }
 }
 
@@ -45,7 +49,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-app.use('/graphql', graphqlHTTP({
+app.use('/simulator', graphqlHTTP({
   schema: simulatorSchema,
   rootValue: simulatorRoot,
   graphiql: true,

@@ -1,5 +1,4 @@
 // Users,js
-
 class Users {
     constructor(dao) {
         this.dao = dao
@@ -74,10 +73,24 @@ class Users {
         )
     }
 
+    // Get all order by ASC or DEC
+    getOrderedBy(order) {
+        if (order == "desc") {
+            return this.dao.all(
+                `SELECT * FROM Users ORDER BY id DESC`
+            )
+        } else {
+            return this.dao.all(
+                `SELECT * FROM Users ORDER BY id ASC`
+            )
+        }
+
+    }
+
     // Delete function
     delete(id) {
         return this.dao.run(
-            `DELETE * FROM Users WHERE id = ?`,[id]
+            `DELETE FROM Users WHERE id = ?`,[id]
         )
     }
 }

@@ -17,7 +17,7 @@ class Role {
 
     create(role) {
         return this.dao.run(
-            `INSERT INTO Role (name) VALUE (?)`,[role]
+            `INSERT INTO Role (name) VALUES (?)`,[role]
         )
     }
 
@@ -29,7 +29,7 @@ class Role {
 
     delete(id) {
         return this.dao.run(
-            `DELETE * FROM Role WHERE id = ?`,[id]
+            `DELETE FROM Role WHERE id = ?`,[id]
         )
     }
 

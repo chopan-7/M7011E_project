@@ -17,7 +17,7 @@ class State {
 
     create(state) {
         this.dao.run(
-            `INSERT INTO State (name) VALUE (?)`,[state]
+            `INSERT INTO State (name) VALUES (?)`,[state]
         )
     }
 
@@ -29,7 +29,7 @@ class State {
 
     delete(id) {
         this.dao.run(
-            `DELETE * FROM State WHERE id = ?`,[id]
+            `DELETE FROM State WHERE id = ?`,[id]
         )
     }
 }
