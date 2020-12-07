@@ -12,7 +12,7 @@ const UserSettings = require('./api/db/UserSettings')
 const ManagerSettings = require('./api/db/ManagerSettings')
 const Role = require('./api/db/Role')
 const State = require('./api/db/State')
-const Weather = require('./api/db/Weather')
+// const Weather = require('./api/db/Weather')  // TO BE REMOVED
 
 
 function main(){
@@ -24,7 +24,7 @@ function main(){
     const managerSettings = new ManagerSettings(dao)
     const role = new Role(dao)
     const state = new State(dao)
-    const weather = new Weather(dao)
+    // const weather = new Weather(dao)     // TO BE REMOVED
 
 
     // Create a new database-file if not exist
