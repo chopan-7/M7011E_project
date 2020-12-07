@@ -1,5 +1,6 @@
 const Consumption = require('./consumtionSim')
 const Weather = require('./Weather')
+const Pricing = require('./pricing')
 
 class Simulator {
 
@@ -13,18 +14,31 @@ class Simulator {
         this.consumption = new Consumption(this.minConsumption, this.maxConsumption)
 
         // Weather params
-        // this.weather = new Weather()    // create weather simulator
+        this.weather = new Weather()    // create weather simulator
+        
+        // update daily wind data every 6 seconds
+        const updateDaily = setInterval( () => {
+            this.weather.getDate()
+        }, 6000)
 
+        // Pricing params
+        this.priceModel = new Pricing()
     }
-    
+
     //TODO: Create functions for passing data to the database following a timer/ticker.
     getConsumption() {
         return this.consumption.simulateDaily()
     }
 
-    // getWind() {
-    //     return this.weather.getWind()
-    // }
+    getWind() {
+        return this.weather.getWind()
+    }
+
+    getSuggestedPrice() {
+        return this.priceModel.suggestedPrice()
+    }
+
+
 }
 
 module.exports = Simulator;

@@ -1,0 +1,128 @@
+[
+    {
+        "info": {
+            "name": "Dummy1",
+            "email": "d1@greenlight.org",
+            "password": "d1",
+            "picture": "d1.jpg",
+            "role": 2,
+            "location": "luleå"
+        },
+        "settings": {
+            "buffer": "",
+            "buy_ratio": 0.0,
+            "sell_ratio": 0.0,
+            "consumption": 2.0,
+            "production": 4.0,
+            "state": 5
+        }
+    },
+    {
+        "info": {
+            "name": "Dummy2",
+            "email": "d2@greenlight.org",
+            "password": "d2",
+            "picture": "d2.jpg",
+            "role": 2,
+            "location": "luleå"
+        },
+        "settings": {
+            "buffer": "",
+            "buy_ratio": 0.0,
+            "sell_ratio": 0.0,
+            "consumption": 2.0,
+            "production": 4.0,
+            "state": 5
+        }
+    },
+    {
+        "info": {
+            "name": "Dummy3",
+            "email": "d3@greenlight.org",
+            "password": "d3",
+            "picture": "d3.jpg",
+            "role": 2,
+            "location": "luleå"
+        },
+        "settings": {
+            "buffer": "",
+            "buy_ratio": 0.0,
+            "sell_ratio": 0.0,
+            "consumption": 2.0,
+            "production": 4.0,
+            "state": 5
+        }
+    },
+    {
+        "info": {
+            "name": "Dummy4",
+            "email": "d4@greenlight.org",
+            "password": "d4",
+            "picture": "d4.jpg",
+            "role": 2,
+            "location": "luleå"
+        },
+        "settings": {
+            "buffer": "",
+            "buy_ratio": 0.0,
+            "sell_ratio": 0.0,
+            "consumption": 2.0,
+            "production": 4.0,
+            "state": 5
+        }
+    },
+    {
+        "info": {
+            "name": "Consumer1",
+            "email": "c1@greenlight.org",
+            "password": "c1",
+            "picture": "c1.jpg",
+            "role": 1,
+            "location": "luleå"
+        },
+        "settings": {
+            "buffer": "",
+            "buy_ratio": 0.0,
+            "sell_ratio": 0.0,
+            "consumption": 2.0,
+            "production": 4.0,
+            "state": 5
+        }
+    },
+    {
+        "info": {
+            "name": "Consumer2",
+            "email": "c2@greenlight.org",
+            "password": "c2",
+            "picture": "c2.jpg",
+            "role": 1,
+            "location": "luleå"
+        },
+        "settings": {
+            "buffer": "",
+            "buy_ratio": 0.0,
+            "sell_ratio": 0.0,
+            "consumption": 2.0,
+            "production": 4.0,
+            "state": 5
+        }
+    },
+    {
+        "info": {
+            "name": "Consumer3",
+            "email": "c3@greenlight.org",
+            "password": "c3",
+            "picture": "c3.jpg",
+            "role": 1,
+            "location": "luleå"
+        },
+        "settings": {
+            "buffer": "",
+            "buy_ratio": 0.0,
+            "sell_ratio": 0.0,
+            "consumption": 2.0,
+            "production": 4.0,
+            "state": 5
+        }
+    }
+]

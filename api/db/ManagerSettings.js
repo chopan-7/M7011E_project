@@ -22,17 +22,17 @@ class ManagerSettings {
         return this.dao.run(sql)
     }
 
-    create(manager_id, prodution, buffer, buffer_ratio, state, currentPrice) {
-        const sql = `INSERT INTO ManagerSettings (
+    create(manager_id, production, buffer, buffer_ratio, state, currentPrice) {
+        return this.dao.run(`INSERT INTO ManagerSettings (
             manager_id,
             production,
             buffer, 
             buffer_ratio,
             state,
             currentPrice
-        ) VALUES (?, ?, ?, ?, ?, ?)`,
-        [manager_id, prodution, buffer, buffer_ratio, state, currentPrice]
-        return this.dao.run(sql)
+            )
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [manager_id, production, buffer, buffer_ratio, state, currentPrice])
     }
 
     // update functions
@@ -78,10 +78,23 @@ class ManagerSettings {
         )
     }
 
+    getAll(){
+        return this.dao.get(
+            `SELECT * FROM ManagerSettings`
+        )
+    }
+
+    // Return sum of given columns
+    sumOf(column) {
+        return this.dao.get(
+            `SELECT SUM(${column}) FROM ManagerSettings`
+        )
+    }
+
     // delete function
     delete(id) {
         return this.dao.run(
-            `DELETE * FROM ManagerSettings WHERE manager_id = ?`,[id]
+            `DELETE FROM ManagerSettings WHERE manager_id = ?`,[id]
         )
     }
 }

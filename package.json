@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dbinit": "node dbinit"
   },
   "dependencies": {
     "bluebird": "^3.7.2",
@@ -20,13 +21,10 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.0",
     "express-graphql": "^0.12.0",
     "gaussian": "^1.1.0",
     "graphql": "^15.4.0",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.1",
     "node-fetch": "^2.6.1"
   }
 }
