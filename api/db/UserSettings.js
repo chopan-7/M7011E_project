@@ -96,6 +96,12 @@ class UserSettings {
         )
     }
 
+    getWhere(columns, condition) {
+        return this.dao.get(
+            `SELECT ${columns} FROM UserSettings WHERE ${condition}`
+        )
+    }
+
     // Return sum of given columns
     async sumOf(column) {
         return this.dao.get(

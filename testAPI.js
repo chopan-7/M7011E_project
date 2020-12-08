@@ -6,7 +6,7 @@ var query = `query Simulator {
     }
 }`
 
-var data = fetch('http://localhost:3000/graphql',{
+var data = fetch('http://localhost:3000/simulator',{
     method: 'POST',
     headers: {
         'Content-type': 'application/json',
