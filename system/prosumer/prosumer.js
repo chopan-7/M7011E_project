@@ -82,7 +82,7 @@ class Prosumer {
         })
     }
 
-    //TODO: create production function hej
+    //TODO: create production function
     production(wind) {
         pi = Math.PI
         r = 58          //radius of turbine
