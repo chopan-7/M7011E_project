@@ -87,6 +87,25 @@ class Users {
 
     }
 
+    getAllWhere(condition) {
+        return this.dao.all(
+            `SELECT * FROM Users WHERE ${condition}`
+        )
+    }
+
+    getWhere(columns, condition) {
+        return this.dao.all(
+            `SELECT ${columns} FROM Users WHERE ${condition}`
+        )
+    }
+
+    // return number of users with given role-id
+    countUsers(role) {
+        return this.dao.get(
+            `SELECT COUNT(id) FROM Users WHERE role=${role}`
+        )
+    }
+
     // Delete function
     delete(id) {
         return this.dao.run(
