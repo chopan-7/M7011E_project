@@ -1,5 +1,8 @@
 // UserSettings.js
 
+const { resolve, reject } = require("bluebird")
+const { valueFromAST } = require("graphql")
+
 class UserSettings {
     constructor(dao) {
         this.dao = dao
@@ -32,7 +35,7 @@ class UserSettings {
                 sell_ratio, 
                 consumption, 
                 production,
-                state)`,
+                state) VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [user_id, buffer, buy_ratio, sell_ratio, consumption, production, state]
         )
     }
@@ -87,10 +90,23 @@ class UserSettings {
         )
     }
 
+    getAll(){
+        return this.dao.get(
+            `SELECT * FROM UserSettings`
+        )
+    }
+
+    // Return sum of given columns
+    async sumOf(column) {
+        return this.dao.get(
+            `SELECT SUM(${column}) FROM UserSettings`
+        )
+    }
+
     // Delete function
     delete(id) {
         return this.dao.run(
-            `DELETE * FROM UserSettings WHERE user_id = ?`,[id]
+            `DELETE FROM UserSettings WHERE user_id = ?`,[id]
         )
     }
 

@@ -1,0 +1,19 @@
+[
+    {
+        "info": {
+            "name": "Manager",
+            "email": "manager@greenlight.org",
+            "password": "manager",
+            "picture": "manager.jpg",
+            "role": 3,
+            "location": "luleå"
+        },
+        "settings": {
+            "production": 4.0,
+            "buffer": 0.0,
+            "buffer_ratio": 0.0,
+            "state": 5,
+            "currentPrice": 1.0
+        }
+    }
+]
