@@ -34,6 +34,11 @@ var simulatorRoot = {
 }
 
 var app = express();
+const port = 8000;
+
+app.listen(port, () => {
+  console.log("Server listening to port "+port)
+})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
