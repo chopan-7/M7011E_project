@@ -7,7 +7,7 @@ class Prosumer {
     }
 
 
-    //TODO: create production function 
+    //TODO: create production function hej
     production(wind) {
         pi = Math.PI
         r = 58          //radius of turbine
@@ -20,9 +20,16 @@ class Prosumer {
 
     // TODO: buy_ratio function
     // ...
+    buy_ratio(buy){ //buy in %
+        buffer_ratio = 1-buy
+
+    }
 
     // TODO: sell_ratio function
     // ...
+    sell_ratio(sell){
+        buffer_ratio = 1 - sell
+    }
 
     // TODO: add electricity to buffer
     addToBuffer(value) {
