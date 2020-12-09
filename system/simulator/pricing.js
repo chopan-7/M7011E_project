@@ -41,7 +41,7 @@ class Pricing {
 
         setTimeout( () => {
             // the Price model
-            var priceEqulibrium = 1 //price when demand = supply
+            var priceEqulibrium = 10 //price when demand = supply
             var ratio = demand/supply
 
             this.currentPrice = priceEqulibrium * ratio

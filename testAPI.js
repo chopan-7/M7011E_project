@@ -6,15 +6,15 @@ var query = `query Simulator {
     }
 }`
 
-var data = fetch('http://localhost:3000/simulator',{
-    method: 'POST',
-    headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-    },
-    body: JSON.stringify({
-        query
-    })
-})
-.then( r => r.json())
-.then(data => console.log('data returned:', data));
+// var data = fetch('http://localhost:8000/simulator',{
+//     method: 'POST',
+//     headers: {
+//         'Content-type': 'application/json',
+//         'Accept': 'application/json',
+//     },
+//     body: JSON.stringify({
+//         query
+//     })
+// })
+// .then( r => r.json())
+// .then(data => console.log('data returned:', data));

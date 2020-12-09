@@ -1,3 +1,4 @@
+const AppSettings = require("../../appSettings")
 const AppDao = require("../../api/db/dao")
 const Users = require("../../api/db/Users")
 const UserSettings = require("../../api/db/UserSettings")
@@ -7,16 +8,9 @@ class Prosumer {
 
     constructor(){
         // connect to db
-        this.dao = new AppDao("./api/db/app.db")
+        this.dao = new AppDao(AppSettings['database'])
         this.users = new Users(this.dao)
         this.uSettings = new UserSettings(this.dao)
-        
-        // simulation parameters
-        this.ticks = 0;
-        setInterval( () =>{
-            console.log(this.ticks)
-            this.ticks += 1
-        }, 10000)
 
         // wind turbine paramenters
         this.turbine = 2 // kW (electricity production constant)
@@ -25,14 +19,27 @@ class Prosumer {
         this.prosumerList = new Array() // prosumer container [{"id": 2, "name": "prosumer1"}]
         this.prosumerData = new Array() // prosumer data container [{"id": 1, "consumptions": [0.3, 0.4,...0.7], "wind": [0.2, 0.6, 3.0,..., 4.0]}]
 
+        // Populate the prosumer list and start the production
         this.getProsumerList()
         setTimeout( () => {
-            console.log(this.prosumerList)
             this.fetchAllData()
         }, 1000)
         setTimeout( () => {
-            console.log(this.prosumerData)
-        }, 2000) 
+            this.startProduction()
+        }, 3000) 
+
+
+        // Simulation event-loop
+        this.ticks = 0; //ticks every hour (10 sec)
+        setInterval( () =>{
+            if (this.ticks == 23) {
+                this.ticks = 0
+            } else {
+                this.ticks += 1
+            }
+            this.startProduction()  // recalculate the production for each prosumer
+        }, AppSettings['simulator']['duration']['hour'])
+
     }
 
     // populate prosumerlist from database
@@ -57,7 +64,7 @@ class Prosumer {
                       getWind
                     }
                 }`
-            var data = fetch('http://localhost:3000/simulator',{
+            var data = fetch(AppSettings['server']+'/api/simulator',{
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
@@ -74,7 +81,7 @@ class Prosumer {
                     {
                         "id": pro['id'],
                         "consumption": data['data']['simulate']['getConsumption'],
-                        "wind": data['data']['simulate']['getWind']
+                        "wind": data['data']['simulate']['getWind'],
                     }
                 )
 
@@ -82,14 +89,24 @@ class Prosumer {
         })
     }
 
+    // produce electricity periodically for every prosumer in the grid
+    // and save the production and consumption data to database
+    startProduction() {
+        this.prosumerList.forEach((prosumer, index) => {
+            var production = this.turbineGenerator(this.prosumerData[index]['wind'][this.ticks])
+            this.uSettings.updateProduction(prosumer['id'], production)
+            this.uSettings.updateConsumption(prosumer['id'], this.prosumerData[index]['consumption'][this.ticks])
+        })
+    }
+
     //TODO: create production function
-    production(wind) {
-        pi = Math.PI
-        r = 58          //radius of turbine
-        v = wind        // wind velocity m/s
-        effi = 0.4      //efficeny %
-        dens = 1.2      //air density 
-        power = (pi/2 * v**3 * r**2 * dens * effi)/1000 //(power of turbine: P = π/2 * r² * v³ * ρ * η) in KW
+    turbineGenerator(wind) {
+        var pi = Math.PI
+        var r = 58          //radius of turbine
+        var v = wind        // wind velocity m/s
+        var effi = 0.4      //efficeny %
+        var dens = 1.2      //air density 
+        var power = (pi/2 * v**3 * r**2 * dens * effi)/1000 //(power of turbine: P = π/2 * r² * v³ * ρ * η) in KW
         return power
     }
 
@@ -116,12 +133,15 @@ class Prosumer {
 
     }
 
+    getData(id) {
+        var prosumerdata = this.prosumerData.find(obj => obj.id == id)
+        return {
+            "id": prosumerdata.id,
+            "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
+            "consumption": prosumerdata.consumption[this.ticks],
+            "wind": prosumerdata.wind[this.ticks]
+        }
+    }
 }
 
 module.exports = Prosumer;
-
-var main = () => {
-    var pro = new Prosumer()
-}
-
-main()

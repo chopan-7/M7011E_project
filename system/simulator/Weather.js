@@ -1,11 +1,19 @@
+const AppSettings = require('../../appSettings')
 var Normaldist = require("./normaldist");
 
 class Weather{
     constructor(){
+        // Weather parameters
         this.data = require('./data/2019_data.json');
         this.normal = new Normaldist()
         this.winds = []; 
         this.date;
+
+        // update daily wind data every 4 minutes
+        this.getDate()
+        const updateDaily = setInterval( () => {
+            this.getDate()
+        }, AppSettings['simulator']['duration']['day'])
 
     }
     

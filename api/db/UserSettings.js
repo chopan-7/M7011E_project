@@ -51,7 +51,7 @@ class UserSettings {
     updateProduction(user_id, production) {
         return this.dao.run(
             `UPDATE UserSettings SET production = ? WHERE user_id = ?`,
-            [consumption, production]
+            [production, user_id]
         )
     }
 
