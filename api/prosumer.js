@@ -17,11 +17,29 @@ var prosumerSchema = buildSchema(`
     type Query {
         prosumerData(id: Int!): Prosumer
     }
+
+    input BufferRatio {
+        buy: Float,
+        sell: Float
+    }
+
+    type BufferRatioMessage {
+        id: Int!,
+        buy: Float,
+        sell: Float
+    }
+
+    type Mutation {
+        setBufferRatio(id: Int!, input: BufferRatio): BufferRatioMessage
+    }
     `);
 
 var prosumerRoot = {
     prosumerData: (args) => {
         return prosumer.getData(args.id)
+    },
+    setBufferRatio: (args) => {
+        return prosumer.setBufferRatio(args)
     }
   }
 

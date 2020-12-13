@@ -65,21 +65,21 @@ class UserSettings {
     updateBuffer(user_id, buffer) {
         return this.dao.run(
             `UPDATE UserSettings SET buffer = ? WHERE user_id = ?`,
-            [state, buffer]
+            [buffer, user_id]
         )
     }
 
     updateSellRatio(user_id, sell_ratio) {
         return this.dao.run(
             `UPDATE UserSettings SET sell_ratio = ? WHERE user_id = ?`,
-            [state, sell_ratio]
+            [sell_ratio, user_id]
         )
     }
 
     updateBuyRatio(user_id, buy_ratio) {
         return this.dao.run(
             `UPDATE UserSettings SET buy_ratio = ? WHERE user_id = ?`,
-            [state, buy_ratio]
+            [buy_ratio, user_id]
         )
     }
 

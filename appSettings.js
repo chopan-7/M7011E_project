@@ -14,6 +14,9 @@ const AppSettings = {
             "minConsumption": 0,
             "maxConsumption": 2
         }
+    },
+    "prosumer": {
+        "bufferCap": 10000 // 1e4 kWh
     }
 }
 

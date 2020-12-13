@@ -8,7 +8,7 @@ class Prosumer {
 
     constructor(){
         // connect to db
-        this.dao = new AppDao(AppSettings['database'])
+        this.dao = new AppDao(AppSettings.database)
         this.users = new Users(this.dao)
         this.uSettings = new UserSettings(this.dao)
 
@@ -38,7 +38,7 @@ class Prosumer {
                 this.ticks += 1
             }
             this.startProduction()  // recalculate the production for each prosumer
-        }, AppSettings['simulator']['duration']['hour'])
+        }, AppSettings.simulator.duration.hour)
 
     }
 
@@ -64,7 +64,7 @@ class Prosumer {
                       getWind
                     }
                 }`
-            var data = fetch(AppSettings['server']+'/api/simulator',{
+            var data = fetch(AppSettings.server+'/api/simulator',{
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
@@ -79,9 +79,9 @@ class Prosumer {
                 // structure of returned data: data['data']['simulate']['getWind']
                 this.prosumerData.push(
                     {
-                        "id": pro['id'],
-                        "consumption": data['data']['simulate']['getConsumption'],
-                        "wind": data['data']['simulate']['getWind'],
+                        "id": pro.id,
+                        "consumption": data.data.simulate.getConsumption,
+                        "wind": data.data.simulate.getWind
                     }
                 )
 
@@ -110,29 +110,68 @@ class Prosumer {
         return power
     }
 
-    // TODO: buy_ratio function
-    // ...
-    buy_ratio(buy){ //buy in %
-        buffer_ratio = 1-buy
+    // TODO: update the value of toGrid to ManagerSettings
+    addToBuffer(id) {
+        // data
+        var prosumerdata = this.prosumerData.find(obj => obj.id == id)
+        var production = this.turbineGenerator(prosumerdata.wind[this.ticks])
+        // get ratio from db
+        this.uSettings.getWhere("sell_ratio, buffer", "user_id="+id)
+        .then((res) => {
+            prosumerdata.sell_ratio = res.sell_ratio
+            prosumerdata.buffer = res.buffer
+        })
 
+        // calculations
+        setTimeout( () => {
+            var toGrid =  production*prosumerdata.sell_ratio  // sell amount to the grid
+            var toBuffer = production - toGrid             // store amount to buffer
+            console.log("Electricity to the buffer: "+toBuffer)
+            console.log("Electricity to the grid: "+ toGrid)
+
+            // add to buffer, if amout > cap, set buffer = cap
+            if(prosumerdata.buffer + toBuffer < AppSettings.prosumer.bufferCap ) {
+                this.uSettings.updateBuffer(id, prosumerdata.buffer + toBuffer)
+                console.log("Left in buffer: "+(prosumerdata.buffer + toBuffer))
+            } else {
+                this.uSettings.updateBuffer(id, AppSettings.prosumer.bufferCap)
+                console.log("Buffer is full!")
+            }
+
+        }, 100)
     }
 
-    // TODO: sell_ratio function
-    // ...
-    sell_ratio(sell){
-        buffer_ratio = 1 - sell
+    // TODO: update value of fromGrid to ManagerSettings
+    drainBuffer(id) {
+        // data
+        var prosumerdata = this.prosumerData.find(obj => obj.id == id)
+        var consumption = prosumerdata.consumption[this.ticks]
+        // get ratio from db
+        this.uSettings.getWhere("buy_ratio, buffer", "user_id="+id)
+        .then((res) => {
+            prosumerdata.buy_ratio = res.buy_ratio
+            prosumerdata.buffer = res.buffer
+        })
+
+        // calculations
+        setTimeout( () => {
+            var fromGrid =  consumption*prosumerdata.buy_ratio  // buy amount from the grid
+            var fromBuffer = consumption-fromGrid               // drain amount from buffer
+            console.log("Electricity needed from buffer "+fromBuffer)
+
+            // drain from buffer, if drain amount > buffer, set buffer to zero
+            if(prosumerdata.buffer > fromBuffer) {
+                this.uSettings.updateBuffer(id, (prosumerdata.buffer-fromBuffer))
+                console.log("Left in buffer: "+(prosumerdata.buffer-fromBuffer))
+            } else {
+                this.uSettings.updateBuffer(id, prosumerdata.buffer-prosumerdata.buffer)
+                console.log("Buffer empty!")
+            }
+
+        }, 100)
     }
 
-    // TODO: add electricity to buffer
-    addToBuffer(value) {
-
-    }
-
-    // TODO: drain electricity from buffer
-    drainBuffer(value) {
-
-    }
-
+    // API functions
     getData(id) {
         var prosumerdata = this.prosumerData.find(obj => obj.id == id)
         return {
@@ -142,6 +181,38 @@ class Prosumer {
             "wind": prosumerdata.wind[this.ticks]
         }
     }
+
+    setBufferRatio(data){
+        data = JSON.parse(JSON.stringify(data)) // data = {id, input {buy, selll}}
+        var msg;
+
+        // check if user exist
+        var checkUser = this.users.getById(data.id)
+        .then((res) => {
+            if(res == undefined){
+                msg ="No user with id: "+data.id
+                console.log(msg)
+            } else {
+                this.uSettings.updateBuyRatio(data.id, data.input.buy)
+                this.uSettings.updateSellRatio(data.id, data.input.sell)
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+        return {id: data.id, buy: data.input.buy, sell: data.input.sell}
+    }
 }
 
 module.exports = Prosumer;
+
+// const main = () => {
+//     var pro = new Prosumer()
+
+//     setTimeout(() => {
+//         pro.addToBuffer(144)
+//     }, 1500)
+
+// }
+
+// main()
