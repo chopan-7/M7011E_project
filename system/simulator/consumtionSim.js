@@ -6,8 +6,6 @@ class Consumption {
     constructor(){
         this.maxConsumption = AppSettings['simulator']['consumption']['maxConsumption']
         this.minConsumption = AppSettings['simulator']['consumption']['minConsumption']
-        console.log(this.maxConsumption)
-        console.log(this.minConsumption)
         this.normal = new Normal()
     }
 
