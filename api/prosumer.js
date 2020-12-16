@@ -7,15 +7,35 @@ const Prosumer = require('../system/prosumer/prosumer')
 const prosumer = new Prosumer()
 
 var prosumerSchema = buildSchema(`
-    type Prosumer {
+    type ProsumerData {
         id: Int!
         production: Float!
         consumption: Float!
         wind: Float!
     }
 
+    type ProsumerInfo {
+        id: Int!
+        name: String!
+        email: String!
+        role: String!
+        state: String!
+    }
+
+    type StatusMsg {
+        status: Boolean!
+        message: String!
+    }
+
+    input RegisterUserData {
+        name: String!
+        email: String!
+        password: String!
+    }
+
     type Query {
-        prosumerData(id: Int!): Prosumer
+        prosumerData(id: Int!): ProsumerData,
+        getAllProsumer: [ProsumerInfo]
     }
 
     input BufferRatio {
@@ -30,7 +50,9 @@ var prosumerSchema = buildSchema(`
     }
 
     type Mutation {
-        setBufferRatio(id: Int!, input: BufferRatio): BufferRatioMessage
+        register(input: RegisterUserData): Boolean!
+        authenticate(email: String!, password: String!): StatusMsg
+        setBufferRatio(id: Int!, input: BufferRatio): StatusMsg
     }
     `);
 
@@ -38,8 +60,17 @@ var prosumerRoot = {
     prosumerData: (args) => {
         return prosumer.getData(args.id)
     },
+    getAllProsumer: () => {
+        return prosumer.getAllProsumer()
+    },
+    register: (args) => {
+        return prosumer.registerProsumer(args)
+    },
+    authenticate: (args) => {
+        return prosumer.authenticate(args.email, args.password)
+    },
     setBufferRatio: (args) => {
-        return prosumer.setBufferRatio(args)
+        return prosumer.setBufferRatio(args.id, args.input)
     }
   }
 

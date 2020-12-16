@@ -7,21 +7,21 @@ const sim = require('../system/simulator/simulator');
 const simulator = new sim()
 
 var simulatorSchema = buildSchema(`
-  type Simulator {
-    getConsumption: [Float!],
-    getWind: [Float!],
-    getSuggestedPrice: Float!,
-    getDate: String!
+  type simData {
+    consumption: [Float!]
+    wind: [Float!]
+    suggestedPrice: Float!
+    date: Float!
   }
 
   type Query {
-    simulate: Simulator
+    simulate: simData
   }
 `);
 
 var simulatorRoot = {
-  simulate: ({}) => {
-    return simulator;
+  simulate: () => {
+    return simulator.simData()
   }
 }
 

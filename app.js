@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiSimulator = require('./api/simulator')
 var apiProsumer = require('./api/prosumer')
+var apiManager = require('./api/manager')
 
 
 var app = express();
@@ -31,6 +32,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/simulator', apiSimulator);
 app.use('/api/prosumer', apiProsumer);
+app.use('/api/manager', apiManager);
 
 
 // catch 404 and forward to error handler

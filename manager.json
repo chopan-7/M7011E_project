@@ -5,8 +5,9 @@
             "email": "manager@greenlight.org",
             "password": "manager",
             "picture": "manager.jpg",
-            "role": 3,
-            "location": "luleå"
+            "role": 2,
+            "location": "luleå",
+            "online": 0
         },
         "settings": {
             "production": 4.0,
