@@ -1,6 +1,7 @@
 const AppSettings = require("../../appSettings")
-const {databaseManager} = require("../data-fetcher")
-const {fetchFromSim, fetchFromMan} = require("../data-fetcher")
+const { databaseManager } = require("../data-fetcher")
+const { fetchFromSim, fetchFromMan } = require("../data-fetcher")
+const jwt = require('jsonwebtoken')
 
 class Prosumer {
 
@@ -47,10 +48,23 @@ class Prosumer {
         return new Promise((resolve, reject) => {
             var role = AppSettings.database.roles.indexOf("prosumer")
             this.users.userAuth(email, password, role).then((auth) => {
-                var res = {"status": undefined, "message": undefined}
+                var res = {"status": undefined, "message": undefined, "tokens": undefined}
                 if(auth[0]) {
+                    // create access-token and refresh-token
+                    var accessToken = jwt.sign(
+                        {"userid": auth[1].id, "email": auth[1].email},
+                        AppSettings.secrets.access,
+                        {expiresIn: '15min'})
+                    
+                    var refreshToken = jwt.sign(
+                        {"userid": auth[1].id, "email": auth[1].email},
+                        AppSettings.secrets.refresh,
+                        {expiresIn: '7d'})
+
+                    res.tokens = {"access":accessToken, "refresh":refreshToken}
                     res.status = true
                     res.message = "Welcome!"
+
                 } else {
                     res.status = false
                     res.message = "Wrong email or password."
@@ -155,8 +169,8 @@ class Prosumer {
                     this.uSettings.updateState(prosumer.id, AppSettings.database.roles.indexOf("outage"))
                 } else {
                     // change state from to running if idle or outage
-                    if(currentState == (AppSettings.database.roles.indexOf("idle") || AppSettings.database.roles.indexOf("outage"))) {
-                        this.uSettings.updateState(prosumer.id, AppSettings.database.roles.indexOf("running"))
+                    if(currentState == (AppSettings.database.states.indexOf("idle"))) {
+                        this.uSettings.updateState(prosumer.id, AppSettings.database.states.indexOf("producing"))
                     }
                 }
             })
@@ -222,7 +236,7 @@ class Prosumer {
             prosumerdata.buffer = res.buffer
 
         })
-
+        
         // calculations
         setTimeout( () => {
             var fromGrid =  consumption*prosumerdata.buy_ratio  // buy amount from the grid
@@ -292,11 +306,13 @@ class Prosumer {
             var res = new Array()
             this.users.getAllWhere("role="+AppSettings.database.roles.indexOf("prosumer")).then((users) => {
                 users.forEach( post => {
+                    var state = async () => await this.uSettings.getWhere("state", "user_id="+post.id).then((res) => AppSettings.database.states[res.state])
                     var user = {
                         "id": post.id,
                         "name": post.name,
                         "email": post.email,
-                        "role": AppSettings.database.roles[post.role]
+                        "role": AppSettings.database.roles[post.role],
+                        "state": state
                     }
                     res.push(user)
                 })
@@ -331,13 +347,3 @@ class Prosumer {
 }
 
 module.exports = Prosumer;
-
-const main = () => {
-    var pro = new Prosumer()
-
-    setTimeout( () => {
-        pro.drainBuffer(2, 34.53)
-    },3000)
-}
-
-main()

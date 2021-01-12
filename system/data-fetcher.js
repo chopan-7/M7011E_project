@@ -17,7 +17,7 @@ var databaseManager = new DatabaseManager() // exported
 // handler for fetching data from API:s
 function fetchFromSim(query) {
     return new Promise((resolve, reject) => {
-        fetch(AppSettings.server+'/api/simulator',{
+        fetch(AppSettings.api.simulator,{
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -33,7 +33,7 @@ function fetchFromSim(query) {
 
 function fetchFromMan(query) {
     return new Promise((resolve, reject) => {
-        fetch(AppSettings.server+'/api/manager',{
+        fetch(AppSettings.api.manager,{
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -49,7 +49,7 @@ function fetchFromMan(query) {
 
 function fetchFromPro(query) {
     return new Promise((resolve, reject) => {
-        fetch(AppSettings.server+'/api/prosumer',{
+        fetch(AppSettings.api.prosumer,{
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',

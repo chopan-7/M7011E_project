@@ -1,5 +1,6 @@
 const AppSettings = require("../../appSettings")
 const {databaseManager} = require("../data-fetcher")
+const jwt = require('jsonwebtoken')
 
 class Manager {
     constructor(){
@@ -27,18 +28,33 @@ class Manager {
     /* ------------------------------- USER FUNCTIONS BEGIN ----------------------------- */
     authenticate(email, password) {
         return new Promise((resolve, reject) =>{
-            var signIn = this.users.userAuth(email, password, 2)
+            var role = AppSettings.database.roles.indexOf("manager")
+            var signIn = this.users.userAuth(email, password, role)
             signIn.then((auth) => {
-                var msg
+                var res = {"status": undefined, "message": undefined, "tokens": undefined}
                 if(auth[0]){
-                    msg = "User sigend in!"
+                    // create access-token and refres-token
+                    var accessToken = jwt.sign(
+                        {"userid": auth[1].id, "email": auth[1].email},
+                        AppSettings.secrets.access,
+                        {expiresIn: '15min'})
+                    
+                    var refreshToken = jwt.sign(
+                        {"userid": auth[1].id, "email": auth[1].email},
+                        AppSettings.secrets.refresh,
+                        {expiresIn: '7d'})
+
+                    res.tokens = {"access":accessToken, "refresh":refreshToken}
+                    res.status = true
+                    res.message = "User sigend in!"
                 } else {
-                    msg = "Wrong username or password!"
+                    res.status = false
+                    res.message = "Wrong username or password!"
                 }
-                resolve({"status": auth[0], "message":msg})
+                resolve(res)
             })
             signIn.catch((err) => {
-                resolve({"status": false, "message": "No manager registerd on this email."})
+                resolve({"status": false, "message": "No manager registerd on this email.", "tokens": undefined})
             })
         })
     }

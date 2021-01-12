@@ -27,13 +27,24 @@ var managerSchema = buildSchema(`
         message: String!
     }
 
+    type AuthMsg {
+        status: Boolean!
+        message: String!
+        tokens: Tokens
+    }
+
+    type Tokens {
+        access: String!
+        refresh: String!
+    }
+
     type Query {
         managerData: Manager
     }
 
     type Mutation {
         startProduction(id: Int!): StatusMsg!
-        authenticate(email: String!, password: String!): StatusMsg!
+        authenticate(email: String!, password: String!): AuthMsg!
         signOut(id: Int!): StatusMsg!
         setCurrentPrice(id: Int!, price: Float!): StatusMsg!
         setBufferRatio(id: Int!, ratio: Float!): StatusMsg!

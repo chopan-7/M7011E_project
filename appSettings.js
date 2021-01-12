@@ -7,6 +7,17 @@ const AppSettings = {
         "roles": ["prosumer", "consumer", "manager"],
         "states": ["outage", "producing", "idle"]
     },
+    "secrets": {
+        "access": "Security is always excessive until it's not enough.",
+        "refresh": "You can't change who you are, but you can change what you have in your head."
+    },
+
+    // URL:s for API:s used in this application
+    "api": {
+        "simulator": "http://localhost:8000/api/simulator",
+        "prosumer": "http://localhost:8000/api/prosumer",
+        "manager": "http://localhost:8000/api/manager"
+    },
 
     // Simulator parameters
     "simulator": {

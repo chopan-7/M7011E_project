@@ -27,6 +27,17 @@ var prosumerSchema = buildSchema(`
         message: String!
     }
 
+    type AuthMsg {
+        status: Boolean!
+        message: String!
+        tokens: Tokens
+    }
+
+    type Tokens {
+        access: String!
+        refresh: String!
+    }
+
     input RegisterUserData {
         name: String!
         email: String!
@@ -51,7 +62,7 @@ var prosumerSchema = buildSchema(`
 
     type Mutation {
         register(input: RegisterUserData): Boolean!
-        authenticate(email: String!, password: String!): StatusMsg
+        authenticate(email: String!, password: String!): AuthMsg
         setBufferRatio(id: Int!, input: BufferRatio): StatusMsg
     }
     `);
