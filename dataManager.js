@@ -2,8 +2,8 @@ const Dao = require("./api/db/dao")
 const Users = require("./api/db/Users")
 const ManagerSettings = require("./api/db/ManagerSettings")
 const UserSettings = require("./api/db/UserSettings")
-const Role = require("./api/db/Role")
-const State = require("./api/db/State")
+// const Role = require("./api/db/Role")
+// const State = require("./api/db/State_REMOVE")
 
 
 class DatabaseManager {
@@ -12,31 +12,8 @@ class DatabaseManager {
         this.users = new Users(this.dao)
         this.uSettings = new UserSettings(this.dao)
         this.mSettings = new ManagerSettings(this.dao)
-        this.role = new Role(this.dao)
-        this.state = new State(this.dao)
-    }
-
-    // create roles and states
-    createRoles(){
-        var roles = ["consumer", "prosumer", "manager"]
-        roles.forEach(r => {
-            this.role.create(r)
-        });
-    }
-    
-    createStates(){
-        var states = ["outage", "producing", "not producing", "online", "offline"]
-        states.forEach(s => {
-            this.state.create(s)
-        });
-    }
-
-    deleteRole(id) {
-        this.role.delete(id)
-    }
-
-    deleteState(id) {
-        this.state.delete(id)
+        // this.role = new Role(this.dao)
+        // this.state = new State(this.dao)
     }
 
     createUser(users) {
@@ -97,23 +74,23 @@ function main(){
     var users = require("./users.json")
     var managers = require("./manager.json")
 
-    // m.createUser(users)
-    // m.createManager(managers)
+    m.createUser(users)
+    m.createManager(managers)
 
-    var sum;
+    // var sum;
 
-    async function updateSum(summa) {
-        sum = summa
-        console.log(sum)
-    }
+    // async function updateSum(summa) {
+    //     sum = summa
+    //     console.log(sum)
+    // }
 
-    var res = m.uSettings.sumOf("consumption").then( (sum) => {
-        updateSum(sum['SUM(consumption)'])
-    })
+    // var res = m.uSettings.sumOf("consumption").then( (sum) => {
+    //     updateSum(sum['SUM(consumption)'])
+    // })
 
-    setTimeout(() => {
-        console.log(sum)
-    },1000)
+    // setTimeout(() => {
+    //     console.log(sum)
+    // },1000)
 
 
 

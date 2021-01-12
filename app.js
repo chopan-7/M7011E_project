@@ -3,35 +3,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
-var { graphqlHTTP } = require('express-graphql');
-var { buildSchema } = require('graphql');
+var jwt = require('express-jwt')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var apiSimulator = require('./api/simulator')
+var apiProsumer = require('./api/prosumer')
+var apiManager = require('./api/manager')
 
-// simulator GQL
-const sim = require('./system/simulator/simulator')
-const simulator = new sim()
-
-
-var simulatorSchema = buildSchema(`
-  type Simulator {
-    getConsumption: [Float!],
-    getWind: [Float!],
-    getSuggestedPrice: Float!
-  }
-
-  type Query {
-    simulate: Simulator
-  }
-`);
-
-var simulatorRoot = {
-  simulate: ({}) => {
-    return simulator;
-  }
-}
 
 var app = express();
 const port = 8000;
@@ -52,13 +31,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api/simulator', apiSimulator);
+app.use('/api/prosumer', apiProsumer);
+app.use('/api/manager', apiManager);
 
-
-app.use('/simulator', graphqlHTTP({
-  schema: simulatorSchema,
-  rootValue: simulatorRoot,
-  graphiql: true,
-}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

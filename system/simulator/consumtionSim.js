@@ -1,11 +1,11 @@
-// Simulation calss for household electricity consumption
+const AppSettings = require('../../appSettings')
 const Normal = require('./normaldist')
  
 class Consumption {
     // The constructor takes minimum and maxconsumption as parameter
-    constructor(minConsumption, maxConsumption){
-        this.maxConsumption = maxConsumption
-        this.minConsumption = minConsumption
+    constructor(){
+        this.maxConsumption = AppSettings['simulator']['consumption']['maxConsumption']
+        this.minConsumption = AppSettings['simulator']['consumption']['minConsumption']
         this.normal = new Normal()
     }
 

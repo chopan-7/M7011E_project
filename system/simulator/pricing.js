@@ -1,15 +1,10 @@
-const AppDao = require("../../api/db/dao")
-const UserSettings = require ("../../api/db/UserSettings")
-const ManagerSettings = require ("../../api/db/ManagerSettings")
+const {databaseManager} = require("../data-fetcher")
 
 
 class Pricing {
     
     constructor(){
-        this.db = "./api/db/app.db"
-        this.dao = new AppDao(this.db)
-        this.users = new UserSettings(this.dao)
-        this.managers = new ManagerSettings(this.dao)
+        this.users = databaseManager.uSettings
 
         // init price
         this.currentPrice = 0
@@ -28,20 +23,11 @@ class Pricing {
         var getSupply = this.users.sumOf("production").then( (uProd) => {
             // add user supplies
             supply += uProd['SUM(production)']
-            this.managers.sumOf("production").then( (mProd) => {
-                // add manager supplies
-                supply += mProd['SUM(production)']
-            })
         })
-
-        // setTimeout( () => {
-        //     console.log("Demand: "+this.demand)
-        //     console.log("Supply: "+this.supply)
-        // }, 1000)
 
         setTimeout( () => {
             // the Price model
-            var priceEqulibrium = 1 //price when demand = supply
+            var priceEqulibrium = 10 //price when demand = supply
             var ratio = demand/supply
 
             this.currentPrice = priceEqulibrium * ratio
