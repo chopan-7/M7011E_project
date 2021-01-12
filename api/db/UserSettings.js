@@ -51,7 +51,7 @@ class UserSettings {
     updateProduction(user_id, production) {
         return this.dao.run(
             `UPDATE UserSettings SET production = ? WHERE user_id = ?`,
-            [consumption, production]
+            [production, user_id]
         )
     }
 
@@ -65,21 +65,21 @@ class UserSettings {
     updateBuffer(user_id, buffer) {
         return this.dao.run(
             `UPDATE UserSettings SET buffer = ? WHERE user_id = ?`,
-            [state, buffer]
+            [buffer, user_id]
         )
     }
 
     updateSellRatio(user_id, sell_ratio) {
         return this.dao.run(
             `UPDATE UserSettings SET sell_ratio = ? WHERE user_id = ?`,
-            [state, sell_ratio]
+            [sell_ratio, user_id]
         )
     }
 
     updateBuyRatio(user_id, buy_ratio) {
         return this.dao.run(
             `UPDATE UserSettings SET buy_ratio = ? WHERE user_id = ?`,
-            [state, buy_ratio]
+            [buy_ratio, user_id]
         )
     }
 
@@ -93,6 +93,12 @@ class UserSettings {
     getAll(){
         return this.dao.get(
             `SELECT * FROM UserSettings`
+        )
+    }
+
+    getWhere(columns, condition) {
+        return this.dao.get(
+            `SELECT ${columns} FROM UserSettings WHERE ${condition}`
         )
     }
 

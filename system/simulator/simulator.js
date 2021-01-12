@@ -4,25 +4,14 @@ const Pricing = require('./pricing')
 
 class Simulator {
 
-    // Define all parameters for the simulation in the constructor
     constructor() {
-        // Consumption params
-        this.minConsumption = 0  //kWh
-        this.maxConsumption = 2  // kWh
-
-        // create consumtion simulator
-        this.consumption = new Consumption(this.minConsumption, this.maxConsumption)
-
-        // Weather params
-        this.weather = new Weather()    // create weather simulator
-        
-        // update daily wind data every 6 seconds
-        const updateDaily = setInterval( () => {
-            this.weather.getDate()
-        }, 6000)
-
-        // Pricing params
+        // create simulator components
+        this.consumption = new Consumption()
+        this.weather = new Weather() 
         this.priceModel = new Pricing()
+
+        // Message to console
+        console.log("Simulator system created")
     }
 
     //TODO: Create functions for passing data to the database following a timer/ticker.
@@ -38,6 +27,21 @@ class Simulator {
         return this.priceModel.suggestedPrice()
     }
 
+    getDate(){
+        return this.weather.date
+    }
+
+    simData() {
+        return new Promise((resolve, reject) => {
+            var data = {
+                "consumption": this.getConsumption(),
+                "wind": this.getWind(),
+                "suggestedPrice": this.getSuggestedPrice(),
+                "date": this.getDate()
+            }
+            resolve(data)
+        }) 
+    }
 
 }
 

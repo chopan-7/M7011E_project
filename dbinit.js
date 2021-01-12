@@ -10,8 +10,8 @@ const AppDAO = require('./api/db/dao')
 const Users = require('./api/db/Users')
 const UserSettings = require('./api/db/UserSettings')
 const ManagerSettings = require('./api/db/ManagerSettings')
-const Role = require('./api/db/Role')
-const State = require('./api/db/State')
+// const Role = require('./api/db/Role')
+// const State = require('./api/db/State')
 // const Weather = require('./api/db/Weather')  // TO BE REMOVED
 
 
@@ -22,8 +22,8 @@ function main(){
     const users = new Users(dao)
     const userSettings = new UserSettings(dao)
     const managerSettings = new ManagerSettings(dao)
-    const role = new Role(dao)
-    const state = new State(dao)
+    // const role = new Role(dao)           // TO BE REMOVED
+    // const state = new State(dao)         // TO BE REMOVED
     // const weather = new Weather(dao)     // TO BE REMOVED
 
 
