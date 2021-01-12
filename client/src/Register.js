@@ -11,6 +11,7 @@ const Register = () => {
          <div> 
              {!submitting ? <RegisterSignup submitRegistration={submitRegistration}/> : <RegisterSuccess/>}
          </div>
+         
         
     )
 }

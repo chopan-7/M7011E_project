@@ -20,9 +20,10 @@ const useRegister = (callback, validate) =>{
     }
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(values)
+        
         setErrors(validate(values));
         setSubmitting(true);
+        
     }
     useEffect(() =>{
         if(Object.keys(errors).length === 0 &&
