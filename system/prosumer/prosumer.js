@@ -231,9 +231,10 @@ class Prosumer {
         
         // get ratio from db
         this.uSettings.getWhere("buy_ratio, buffer", "user_id="+id)
-        .then((res) => {
+        .then((res) => {            
             prosumerdata.buy_ratio = res.buy_ratio
             prosumerdata.buffer = res.buffer
+
         })
         
         // calculations
@@ -265,13 +266,13 @@ class Prosumer {
                 }
             })
 
-        }, 100)
+        }, 1000)
     }
     /* ------------------------------- CORE FUNCTIONS END ------------------------------- */
 
     /* ------------------------------- API FUNCTIONS START ------------------------------ */
     getData(id) {
-        var prosumerdata = this.prosumerData.find(obj => obj.id == id)
+        var prosumerdata = async () => await this.prosumerData.find(obj => obj.id == id)
         return {
             "id": prosumerdata.id,
             "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
