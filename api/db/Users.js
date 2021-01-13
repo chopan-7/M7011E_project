@@ -43,7 +43,7 @@ class Users {
         var checkUser = this.dao.get(`SELECT id, email, password FROM Users WHERE email = ? AND role=?`,[email, role])
         return checkUser.then((user) => {
             return new Promise((resolve, reject) => {
-                if(password == user.password){
+                if(user != undefined && password == user.password){
                     var changeStatus = this.dao.run(`UPDATE Users SET online=1 WHERE id = ?`, [user.id])
                     resolve([true, {"id": user.id, "email": user.email}])
                 } else {

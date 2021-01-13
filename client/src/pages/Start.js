@@ -1,5 +1,3 @@
-
-
 function Start() {
   return (
     <div className="Start">

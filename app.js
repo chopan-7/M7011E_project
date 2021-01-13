@@ -3,17 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var jwt = require('express-jwt')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiSimulator = require('./api/simulator')
 var apiProsumer = require('./api/prosumer')
-var apiManager = require('./api/manager')
+var apiManager = require('./api/manager');
+
+var cors = require('cors')
+
 
 
 var app = express();
 const port = 8000;
+
+app.use(cors())
 
 app.listen(port, () => {
   console.log("Server listening to port "+port)
