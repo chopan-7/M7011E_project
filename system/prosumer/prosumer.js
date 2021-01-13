@@ -45,7 +45,6 @@ class Prosumer {
 
     /* ------------------------------- USER FUNCTIONS BEGIN ----------------------------- */
     authenticate(email, password) {
-        console.log('Logging in...')
         return new Promise((resolve, reject) => {
             var role = AppSettings.database.roles.indexOf("prosumer")
             this.users.userAuth(email, password, role).then((auth) => {
@@ -271,12 +270,16 @@ class Prosumer {
     /* ------------------------------- API FUNCTIONS START ------------------------------ */
     getData(id) {
         return new Promise((resolve, reject) => {
-            var prosumerdata = this.prosumerData.find(obj => obj.id == id)
-            resolve ({
-                "id": prosumerdata.id,
-                "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
-                "consumption": prosumerdata.consumption[this.ticks],
-                "wind": prosumerdata.wind[this.ticks]
+            this.uSettings.getWhere("buffer", "user_id="+id)
+            .then((res) => {
+                var prosumerdata = this.prosumerData.find(obj => obj.id == id)
+                resolve ({
+                    "id": prosumerdata.id,
+                    "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
+                    "consumption": prosumerdata.consumption[this.ticks],
+                    "buffer": res.buffer,
+                    "wind": prosumerdata.wind[this.ticks]
+                })
             })
         })
     }
@@ -335,7 +338,15 @@ class Prosumer {
             )
             createUser.then((res) => {
                 if(res){
-                    console.log(res)
+                    this.uSettings.create(
+                        res.id, // user_id
+                        0,      // buffer
+                        0.5,    // buy_ratio
+                        0.5,    // sell_ratio
+                        0,      // consumption
+                        0,      // production
+                        2       // state
+                    )
                     resolve(true)
                 } else {
                     resolve(false)

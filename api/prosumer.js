@@ -12,6 +12,7 @@ var prosumerSchema = buildSchema(`
         id: Int!
         production: Float!
         consumption: Float!
+        buffer: Float!
         wind: Float!
     }
 
