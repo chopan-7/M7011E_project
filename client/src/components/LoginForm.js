@@ -36,6 +36,9 @@ class LoginForm extends React.Component {
     render(){
         return (
             <div className="LoginForm">
+                <h1>
+                    Login page
+                </h1>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group sige="lg" controlId="email">
                         <Form.Label>Email</Form.Label>

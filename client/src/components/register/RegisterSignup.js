@@ -2,6 +2,7 @@ import React from "react"
 import useRegister from "./useRegister"
 import validate from "./validateRegistration"
 import "./Register.css"
+import Button from 'react-bootstrap/Button'
 const RegisterSignup = ({submitRegistration}) => {
     const {controlChange, values, handleSubmit, errors} = useRegister(submitRegistration, validate);
     
@@ -9,9 +10,9 @@ const RegisterSignup = ({submitRegistration}) => {
         <div className = "form-how">
             <form className="form" onSubmit={handleSubmit}>
                 <h1>
-                    Please fill out registration information bellow
+                    Registration page
                 </h1>
-                <div className="form-inputs">
+                <div className="form-group">
                     <label htmlFor="name"
                     className="form-label">
                     Name  
@@ -19,14 +20,14 @@ const RegisterSignup = ({submitRegistration}) => {
                     <input
                             type="text"
                             name="name"
-                            className="form-input"
+                            className="form-control"
                             placeholder="Enter your full name"
                             value={values.name}
                             onChange={controlChange}
                     />
                     {errors.name && <p>{errors.name}</p>}     
                 </div>
-                <div className="form-inputs">
+                <div className="form-group">
                     <label htmlFor="email"
                     className="form-label">
                     Email
@@ -34,14 +35,14 @@ const RegisterSignup = ({submitRegistration}) => {
                     <input
                             type="email"
                             name="email"
-                            className="form-input"
+                            className="form-control"
                             placeholder="Enter your email"
                             value={values.email}
                             onChange={controlChange}
                     />
                     {errors.email && <p>{errors.email}</p>}   
                 </div>
-                <div className="form-inputs">
+                <div className="form-group">
                     <label htmlFor="password"
                     className="form-label">
                     Password
@@ -49,14 +50,14 @@ const RegisterSignup = ({submitRegistration}) => {
                     <input
                             type="password"
                             name="password"
-                            className="form-input"
+                            className="form-control"
                             placeholder="Choose a password"
                             value={values.password}
                             onChange={controlChange}
                     />
                     {errors.password && <p>{errors.password}</p>}   
                 </div>
-                <div className="form-inputs">
+                <div className="form-group">
                     <label htmlFor="passwordc"
                     className="form-label">
                     Confirm password 
@@ -64,19 +65,20 @@ const RegisterSignup = ({submitRegistration}) => {
                     <input
                             type="password"
                             name="passwordc"
-                            className="form-input"
+                            className="form-control"
                             placeholder="Confirm the password"
                             value={values.passwordc}
                             onChange={controlChange}
                     />
                     {errors.passwordc && <p>{errors.passwordc}</p>}   
                 </div>
-                <button className = "form-input-button"
+                <Button className = "form-input-button"
+                    block size="lg"
                     type="submit">
                     Sign up
-                </button>
+                </Button>
                 <span className="form-input-login">
-                    Already created an account? Login in <a href="#">here</a> 
+                    Already created an account? Login in <a href="/login">here!</a> 
                 </span>
             </form>
         </div>

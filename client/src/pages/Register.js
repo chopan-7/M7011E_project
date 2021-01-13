@@ -1,12 +1,19 @@
-
-
-function Register() {
+import React, {useState} from 'react'
+import RegisterSignup from '../components/register/RegisterSignup'
+import RegisterSuccess from '../components/register/RegisterSuccess'
+//import "Register.css"
+const Register = () => {
+    const [submitting, setSubmitting] = useState(false)
+    function submitRegistration(){
+        setSubmitting(true)
+    }
     return (
-      <div className="Start">
-        <h1>Register page</h1>
-      </div>
-    );
-  }
-  
-  export default Register;
-  
+         <div> 
+             {!submitting ? <RegisterSignup submitRegistration={submitRegistration}/> : <RegisterSuccess/>}
+         </div>
+         
+        
+    )
+}
+
+export default Register

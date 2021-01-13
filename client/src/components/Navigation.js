@@ -5,9 +5,9 @@ import { NavLink } from 'react-router-dom';
 const Navigation = () => {
     return (
        <div>
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/register">Register</NavLink>
-          <NavLink to="/Login">Login</NavLink>
+          <NavLink to="/" style={{ marginRight: 10 }}>Home</NavLink>
+          <NavLink to="/register" style={{ marginRight: 10 }}>Register</NavLink>
+          <NavLink to="/Login" style={{ marginRight: 10 }}>Login</NavLink>
        </div>
     );
 }

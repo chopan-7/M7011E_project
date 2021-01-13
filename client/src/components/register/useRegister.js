@@ -19,6 +19,7 @@ const useRegister = (callback, validate) =>{
         
     }
     const handleSubmit = e => {
+        
         e.preventDefault();
         
         setErrors(validate(values));
