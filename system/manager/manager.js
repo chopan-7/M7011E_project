@@ -35,12 +35,12 @@ class Manager {
                 if(auth[0]){
                     // create access-token and refres-token
                     var accessToken = jwt.sign(
-                        {"userid": auth[1].id, "email": auth[1].email},
+                        {"userid": auth[1].id},
                         AppSettings.secrets.access,
                         {expiresIn: '15min'})
                     
                     var refreshToken = jwt.sign(
-                        {"userid": auth[1].id, "email": auth[1].email},
+                        {"userid": auth[1].id},
                         AppSettings.secrets.refresh,
                         {expiresIn: '7d'})
 
@@ -73,18 +73,7 @@ class Manager {
     }
 
     signOut(id) {
-        return new Promise((resolve, reject) => {
-            var res = {"status": undefined, "message": undefined}
-            if(!this.isAuthenticated(id)){
-                res.message = "Manager not signed in.";
-                res.status = false
-            }else{
-                var updateStatus = this.users.signOut(id)
-                res.message = "Goodbye!";
-                res.status = true
-            }
-            resolve(res)
-        })
+        return this.users.signOut(id)
     }
 
     isProsumer(id) {

@@ -9,7 +9,8 @@ const AppSettings = {
     },
     "secrets": {
         "access": "Security is always excessive until it's not enough.",
-        "refresh": "You can't change who you are, but you can change what you have in your head."
+        "refresh": "You can't change who you are, but you can change what you have in your head.",
+        "unsign": "You'll never catch me alive!"
     },
 
     // URL:s for API:s used in this application

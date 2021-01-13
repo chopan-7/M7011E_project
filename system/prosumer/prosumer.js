@@ -53,12 +53,12 @@ class Prosumer {
                 if(auth[0]) {
                     // create access-token and refresh-token
                     var accessToken = jwt.sign(
-                        {"userid": auth[1].id, "email": auth[1].email},
+                        {"userid": auth[1].id},
                         AppSettings.secrets.access,
                         {expiresIn: '15min'})
                     
                     var refreshToken = jwt.sign(
-                        {"userid": auth[1].id, "email": auth[1].email},
+                        {"userid": auth[1].id},
                         AppSettings.secrets.refresh,
                         {expiresIn: '7d'})
 
@@ -89,18 +89,7 @@ class Prosumer {
     }
 
     signOut(id) {
-        return new Promise((resolve, reject) => {
-            var res = {"status": undefined, "message": undefined}
-            if(!this.isAuthenticated(id)){
-                res.message = "User not signed in.";
-                res.status = false
-            }else{
-                var updateStatus = this.users.signOut(id)
-                res.message = "Goodbye!";
-                res.status = true
-            }
-            resolve(res)
-        })
+        return this.users.signOut(id)
     }
 
     /* ------------------------------- USER FUNCTINOS END ---------------------------------- */
@@ -218,8 +207,12 @@ class Prosumer {
             }
 
             // add to Market via API
+            var accessToken = jwt.sign(
+                {userid: id},
+                AppSettings.secrets.access,
+                {expiresIn: '1min'})
             var mutation = `mutation {
-                addToMarket(id: ${id}, amount: ${toGrid})
+                addToMarket(id: ${id}, amount: ${toGrid}, input: {access: "${accessToken}"})
             }`
             fetchFromMan(mutation)
 
@@ -243,8 +236,12 @@ class Prosumer {
             var fromGrid =  consumption*prosumerdata.buy_ratio  // buy amount from the grid
 
             // drain from Market via API
+            var accessToken = jwt.sign(
+                {userid: id},
+                AppSettings.secrets.access,
+                {expiresIn: '1min'})
             var mutation = `mutation {
-                drainMarket(id: ${id}, amount: ${fromGrid}) {
+                drainMarket(id: ${id}, amount: ${fromGrid}, input: {access: "${accessToken}"}) {
                     status
                     fromMarket
                 }
@@ -273,13 +270,15 @@ class Prosumer {
 
     /* ------------------------------- API FUNCTIONS START ------------------------------ */
     getData(id) {
-        var prosumerdata = async () => await this.prosumerData.find(obj => obj.id == id)
-        return {
-            "id": prosumerdata.id,
-            "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
-            "consumption": prosumerdata.consumption[this.ticks],
-            "wind": prosumerdata.wind[this.ticks]
-        }
+        return new Promise((resolve, reject) => {
+            var prosumerdata = this.prosumerData.find(obj => obj.id == id)
+            resolve ({
+                "id": prosumerdata.id,
+                "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
+                "consumption": prosumerdata.consumption[this.ticks],
+                "wind": prosumerdata.wind[this.ticks]
+            })
+        })
     }
 
     setBufferRatio(id, data){
