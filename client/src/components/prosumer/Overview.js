@@ -1,33 +1,35 @@
 import {useState, useEffect} from 'react'
 import axios from "axios"
+import Cookies from 'universal-cookie'
 
-const useProsumerOverview = () =>{
-    const [values, setValues] = useState({
-        
-        production:'',
-        consumption:'',
-        wind:'',
-        //net_production:'',
-        buffer:''
-        //marketprice:''
-        
-    })
+const cookies = new Cookies()
+const jwt = require("jsonwebtoken")
+const Overview = () =>{
+    const [production, setProduction] = useState('');
+    const [consumption, setConsumption] = useState('');
+    const [buffer, setBuffer] = useState('');
+    const [wind, setWind] = useState('');
+    
 
     const url = 'http://localhost:8000/api/prosumer'
 
     useEffect(() => { // kanske asyn sen ?
         getOverview()
+        setInterval(()=>{getOverview()},10000)
     }, [])
 
     const getOverview = () => {
-        //axios.get(url) //lägg till ("${url}saken")
+        
+        const getToken = cookies.get('accessToken')
+        const tokendata = jwt.verify(getToken, "Security is always excessive until it's not enough.")
+        
         axios({
             method: 'post',
             url: 'http://localhost:8000/api/prosumer',
             data: {
                 query: `query{
-                    prosumerData(id:1, input:{
-                        access:token
+                    prosumerData(id:${tokendata.userid}, input:{
+                        access:"${getToken}"
                     }){
                         production
                         consumption
@@ -38,26 +40,29 @@ const useProsumerOverview = () =>{
             }
         })
         .then((response) => {
-            const overview = response.data // .wind ....
             
-            const {production, value} = overview
-            setValues({
-                ...values,
-            [production]: value
-            })
+
+            const data = response.data.data.prosumerData 
+            
+            
+            setProduction(data.production)
+            setConsumption(data.consumption)
+            setBuffer(data.buffer)
+            setWind(data.wind)
             
         })
-        .catch(error => console.error("error"))
+        
     }
    
     
     return (
         <div> 
-          <p>Current wind {values.wind}</p>
-          <p>Current production {values.production}</p> 
-          <p>Current consumtion {values.consumption}</p>  
+          <p>Current wind: {wind} </p>
+          <p>Current production: {production} </p> 
+          <p>Current consumtion: {consumption} </p> 
+          <p>Current buffer: {buffer} </p> 
         </div>
     )
 }
 
-export default useProsumerOverview
+export default Overview

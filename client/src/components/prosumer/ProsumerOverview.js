@@ -16,10 +16,11 @@ const useProsumerOverview = () =>{
         const [item] = data.results
         setValues(item) 
     }, [])
+
+    getOverview()
     
     return (
         <div> 
-          
           <p>Current wind {values.wind}</p>
           <p>Current production {values.production}</p> 
           <p>Current consumtion {values.consumption}</p> 
