@@ -48,7 +48,7 @@ class LoginForm extends React.Component {
             } else {
                 alert('Welcome!')
                 if(userRole === 'manager') {
-                    this.props.history.push('/manager_login')    // redirect to manager page
+                    this.props.history.push('/manager/overview')    // redirect to manager page
                 } else {
                     this.props.history.push('/Login')    // redirect to prosumer page
                 }
