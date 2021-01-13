@@ -3,6 +3,7 @@ const AppDao = require("../api/db/dao")
 const Users = require("../api/db/Users")
 const UserSettings = require("../api/db/UserSettings")
 const fetch = require("node-fetch")
+const axios = require("axios")
 
 // database module
 class DatabaseManager{

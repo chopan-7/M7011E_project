@@ -38,8 +38,8 @@ class LoginForm extends React.Component {
         this.loginUser(this.state.email, this.state.password, userRole).then( (res) => {
             // set cookies
             if(res.tokens != null) {
-                cookies.set('accessToken', res.tokens.access, {path: '/', expires: new Date(Date.now()+(60*60*24*15)*1000)})
-                cookies.set('refreshToken', res.tokens.refresh, {path: '/', expires: new Date(Date.now()+(60*60*24*7)*1000)})
+                cookies.set('accessToken', res.tokens.access, {path: '/'})
+                cookies.set('refreshToken', res.tokens.refresh, {path: '/'})
             }
 
             // render message on fail or redirect on success
@@ -91,11 +91,11 @@ class LoginForm extends React.Component {
                     Login page
                 </h1>
                 <Form onSubmit={this.handleSubmit}>
-                    <Form.Group sige="lg" controlId="email">
+                    <Form.Group size="lg" controlId="email">
                         <Form.Label>Email</Form.Label>
                         <Form.Control autoFocus type="email" name="email" value={this.state.email} onChange={this.handleChange}/>
                     </Form.Group>
-                    <Form.Group sige="lg" controlId="password">
+                    <Form.Group size="lg" controlId="password">
                         <Form.Label>Password</Form.Label>
                         <Form.Control autoFocus type="password" name="password" value={this.state.password} onChange={this.handleChange}/>
                     </Form.Group>
