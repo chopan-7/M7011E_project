@@ -5,7 +5,6 @@ import './App.css'
 import Start from './pages/Start';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import Manager_Login from './pages/Manager_login';
 import Navigation from './components/Navigation';
 
 import ProsumerPage from './pages/prosumer/ProsumerPage';
@@ -26,7 +25,6 @@ class App extends Component {
              <Route path="/" component={Start} exact/>
              <Route path="/register" component={Register} exact/>
              <Route path="/login" component={Login} exact/>
-             <Route path="/manager_login" component={Manager_Login} exact/>
 
              <Route path="/prosumer" component={ProsumerPage} exact/>
              <Route path="/prosumer_options" component={ProsumerOptions} exact/>
@@ -35,6 +33,8 @@ class App extends Component {
              <Route path="/manager" component={ManagerPage} exact/>
              <Route path="/manager_options" component={ManagerOptions} exact/>
              <Route path="/manager_user" component={ManagerUser} exact/>
+             <Route path="/manager_register" component={Register} exact/>
+             <Route path="/manager_login" component={Login} exact/>
            </Switch>
         </div> 
       </BrowserRouter>
