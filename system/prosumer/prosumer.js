@@ -45,6 +45,7 @@ class Prosumer {
 
     /* ------------------------------- USER FUNCTIONS BEGIN ----------------------------- */
     authenticate(email, password) {
+        console.log('Logging in...')
         return new Promise((resolve, reject) => {
             var role = AppSettings.database.roles.indexOf("prosumer")
             this.users.userAuth(email, password, role).then((auth) => {
