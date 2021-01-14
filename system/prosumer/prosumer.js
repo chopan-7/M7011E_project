@@ -155,7 +155,7 @@ class Prosumer {
                 var currentState = p.state
                 // change state to outtage of consumption > production+buffer
                 if(consumption > (production+this.prosumerData[index].buffer)) {
-                    this.uSettings.updateState(prosumer.id, AppSettings.database.roles.indexOf("outage"))
+                    this.uSettings.updateState(prosumer.id, AppSettings.database.states.indexOf("outage"))
                 } else {
                     // change state from to running if idle or outage
                     if(currentState == (AppSettings.database.states.indexOf("idle"))) {
@@ -331,17 +331,17 @@ class Prosumer {
     getProsumerInfo(id){
         return new Promise((resolve, reject) => {
             this.users.getAllWhere("id="+id).then((user) => {
-                // var state = async () => await this.uSettings.getWhere("state", "user_id="+id).then((res) => AppSettings.database.states[res.state])
-                var state = async () => await this.uSettings.getWhere("state", "user_id="+id).then((res) => console.log(res.state))
-                var userResult = {
-                    "id": user[0].id,
-                    "name": user[0].name,
-                    "email": user[0].email,
-                    "role": AppSettings.database.roles[user[0].role],
-                    "state": state,
-                    "online": user[0].online == 0?false:true
-                }
-                resolve(userResult)
+                this.uSettings.getWhere("state", "user_id="+id).then((res) => {
+                    const state = AppSettings.database.states[res.state]
+                    var userResult = {
+                        "id": user[0].id,
+                        "name": user[0].name,
+                        "email": user[0].email,
+                        "role": AppSettings.database.roles[user[0].role],
+                        "state": state
+                    }
+                    resolve(userResult)
+                })
             })
         })
     }

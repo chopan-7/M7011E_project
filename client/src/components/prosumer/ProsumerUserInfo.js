@@ -25,7 +25,7 @@ const ProsumerUserInfo = () =>{
             url: 'http://localhost:8000/api/prosumer',
             data: {
                 query: `query{
-                    getAllProsumer(input:{
+                    getProsumerInfo(id:${tokendata.userid}, input:{
                         access:"${getToken}"
                     }){
                         name
@@ -37,8 +37,8 @@ const ProsumerUserInfo = () =>{
         })
         .then((response) => {
             
-
-            const data = response.data.data.ProsumerInfo 
+            
+            const data = response.data.data.getProsumerInfo 
             
             
             setName(data.name)
