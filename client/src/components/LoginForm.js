@@ -34,7 +34,7 @@ class LoginForm extends React.Component {
 
     handleSubmit(event) {
         // Authenticate user or manager
-        const userRole = (window.location.href === 'http://localhost:3000/manager_login')?'manager':'prosumer'
+        const userRole = (window.location.href === 'http://localhost:3000/login_manager')?'manager':'prosumer'
         this.loginUser(this.state.email, this.state.password, userRole).then( (res) => {
             // set cookies
             if(res.tokens != null) {
@@ -48,7 +48,7 @@ class LoginForm extends React.Component {
             } else {
                 alert('Welcome!')
                 if(userRole === 'manager') {
-                    this.props.history.push('/manager/overview')    // redirect to manager page
+                    this.props.history.push('/manager_users')    // redirect to manager page
                 } else {
                     this.props.history.push('/Login')    // redirect to prosumer page
                 }
