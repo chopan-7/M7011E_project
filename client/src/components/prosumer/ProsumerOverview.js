@@ -1,10 +1,11 @@
 import {useState, useEffect} from 'react'
 import axios from "axios"
 import Cookies from 'universal-cookie'
+
 import getFromCookie from '../tokenHandler'
 
+const ProsumerOverview = () =>{
 
-const Overview = () =>{
     const [production, setProduction] = useState('');
     const [consumption, setConsumption] = useState('');
     const [buffer, setBuffer] = useState('');
@@ -36,7 +37,6 @@ const Overview = () =>{
         })
         .then((response) => {
             
-
             const data = response.data.data.prosumerData 
             
             
@@ -60,4 +60,5 @@ const Overview = () =>{
     )
 }
 
-export default Overview
+
+export default ProsumerOverview
