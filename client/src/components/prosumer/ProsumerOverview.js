@@ -1,34 +1,63 @@
 import {useState, useEffect} from 'react'
-const useProsumerOverview = () =>{
-    const [values, setValues] = useState({
-        wind:'',
-        production:'',
-        consumption:'',
-        net_production:'',
-        battery:'',
-        marketprice:''
-        
-    })
-        
-    useEffect(async () => {
-        const response = await fetch("https://randomuser.me/")
-        const data = await response.json()
-        const [item] = data.results
-        setValues(item) 
+import axios from "axios"
+import Cookies from 'universal-cookie'
+import getFromCookie from '../tokenHandler'
+
+
+const Overview = () =>{
+    const [production, setProduction] = useState('');
+    const [consumption, setConsumption] = useState('');
+    const [buffer, setBuffer] = useState('');
+    const [wind, setWind] = useState('');
+
+    useEffect(() => { // kanske asyn sen ?
+        getOverview()
+        setInterval(()=>{getOverview()},10000)
     }, [])
 
-    getOverview()
+    const getOverview = () => {
+        
+        const getToken = getFromCookie('accessToken')
+        axios({
+            method: 'post',
+            url: 'http://localhost:8000/api/prosumer',
+            data: {
+                query: `query{
+                    prosumerData(id:${getToken.data.userid}, input:{
+                        access:"${getToken.token}"
+                    }){
+                        production
+                        consumption
+                        buffer
+                        wind
+                    }
+                }`
+            }
+        })
+        .then((response) => {
+            
+
+            const data = response.data.data.prosumerData 
+            
+            
+            setProduction(data.production)
+            setConsumption(data.consumption)
+            setBuffer(data.buffer)
+            setWind(data.wind)
+            
+        })
+        
+    }
+   
     
     return (
         <div> 
-          <p>Current wind {values.wind}</p>
-          <p>Current production {values.production}</p> 
-          <p>Current consumtion {values.consumption}</p> 
-          <p>Current net production {values.net_production}</p> 
-          <p>Current battery level {values.battery}</p> 
-          <p>Current marketprice {values.marketprice}</p>   
+          <p>Current wind: {wind} </p>
+          <p>Current production: {production} </p> 
+          <p>Current consumtion: {consumption} </p> 
+          <p>Current buffer: {buffer} </p> 
         </div>
     )
 }
 
-export default useProsumerOverview
+export default Overview
