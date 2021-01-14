@@ -8,7 +8,7 @@ const Manager = require('../system/manager/manager')
 const manager = new Manager()
 
 var managerSchema = buildSchema(`
-    type Manager {
+    type ManagerData {
         state: Int!
         buffer: Float!
         bufferRatio: Float!
@@ -16,6 +16,14 @@ var managerSchema = buildSchema(`
         marketDemand: Float!
         prosumerOutage: Int!
         
+    }
+
+    type ManagerInfo {
+        id: Int!
+        name: String!
+        email: String!
+        role: String!
+        state: String!
     }
 
     type MarketMsg {
@@ -40,7 +48,8 @@ var managerSchema = buildSchema(`
     }
 
     type Query {
-        managerData(input: inputTokens): Manager
+        managerData(input: inputTokens): ManagerData
+        managerInfo(id: Int!, input: inputTokens): ManagerInfo
     }
 
     input inputTokens {
@@ -64,6 +73,12 @@ var managerRoot = {
         const getToken = verifyToken(args.input.access)
         if(getToken.verified) {
             return manager.getData()
+        }
+    },
+    managerInfo: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified && args.id === getToken.data.id) {
+            return manager.getManagerInfo(args.id)
         }
     },
     startProduction: (args) => {

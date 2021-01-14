@@ -1,17 +1,14 @@
 import {useState, useEffect} from 'react'
 import axios from "axios"
 import Cookies from 'universal-cookie'
+import getFromCookie from '../tokenHandler'
 
-const cookies = new Cookies()
-const jwt = require("jsonwebtoken")
+
 const Overview = () =>{
     const [production, setProduction] = useState('');
     const [consumption, setConsumption] = useState('');
     const [buffer, setBuffer] = useState('');
     const [wind, setWind] = useState('');
-    
-
-    const url = 'http://localhost:8000/api/prosumer'
 
     useEffect(() => { // kanske asyn sen ?
         getOverview()
@@ -20,16 +17,14 @@ const Overview = () =>{
 
     const getOverview = () => {
         
-        const getToken = cookies.get('accessToken')
-        const tokendata = jwt.verify(getToken, "Security is always excessive until it's not enough.")
-        
+        const getToken = getFromCookie('accessToken')
         axios({
             method: 'post',
             url: 'http://localhost:8000/api/prosumer',
             data: {
                 query: `query{
-                    prosumerData(id:${tokendata.userid}, input:{
-                        access:"${getToken}"
+                    prosumerData(id:${getToken.data.userid}, input:{
+                        access:"${getToken.token}"
                     }){
                         production
                         consumption

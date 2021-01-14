@@ -56,11 +56,13 @@ var prosumerSchema = buildSchema(`
     type Query {
         prosumerData(id: Int!, input: inputTokens): ProsumerData,
         getAllProsumer(input: inputTokens): [ProsumerInfo]
+        getProsumerInfo(id: Int!, input: inputTokens): ProsumerInfo
     }
 
     input BufferRatio {
         buy: Float,
-        sell: Float
+        sell: Float,
+        token: String!
     }
 
     type BufferRatioMessage {
@@ -90,6 +92,12 @@ var prosumerRoot = {
             return prosumer.getAllProsumer()
         }
     },
+    getProsumerInfo: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified && args.id === getToken.data.id) {
+            return prosumer.getProsumerInfo(args.id)
+        }
+    },
     register: (args) => {
         return prosumer.registerProsumer(args)
     },
@@ -109,7 +117,7 @@ var prosumerRoot = {
         }
     },
     setBufferRatio: (args) => {
-        const getToken = verifyToken(args.input.access)
+        const getToken = verifyToken(args.input.token)
         if(getToken.verified && args.id === getToken.data.id) {
             return prosumer.setBufferRatio(args.id, args.input)
         }
