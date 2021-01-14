@@ -1,34 +1,68 @@
 import {useState, useEffect} from 'react'
-const useProsumerOverview = () =>{
-    const [values, setValues] = useState({
-        wind:'',
-        production:'',
-        consumption:'',
-        net_production:'',
-        battery:'',
-        marketprice:''
-        
-    })
-        
-    useEffect(async () => {
-        const response = await fetch("https://randomuser.me/")
-        const data = await response.json()
-        const [item] = data.results
-        setValues(item) 
+import axios from "axios"
+import Cookies from 'universal-cookie'
+
+const cookies = new Cookies()
+const jwt = require("jsonwebtoken")
+const ProsumerOverview = () =>{
+    const [production, setProduction] = useState('');
+    const [consumption, setConsumption] = useState('');
+    const [buffer, setBuffer] = useState('');
+    const [wind, setWind] = useState('');
+    
+
+    
+
+    useEffect(() => { 
+        getOverview()
+        setInterval(()=>{getOverview()},10000)
     }, [])
 
-    getOverview()
+    const getOverview = () => {
+        
+        const getToken = cookies.get('accessToken')
+        const tokendata = jwt.verify(getToken, "Security is always excessive until it's not enough.")
+        
+        axios({
+            method: 'post',
+            url: 'http://localhost:8000/api/prosumer',
+            data: {
+                query: `query{
+                    prosumerData(id:${tokendata.userid}, input:{
+                        access:"${getToken}"
+                    }){
+                        production
+                        consumption
+                        buffer
+                        wind
+                    }
+                }`
+            }
+        })
+        .then((response) => {
+            
+
+            const data = response.data.data.prosumerData 
+            
+            
+            setProduction(data.production)
+            setConsumption(data.consumption)
+            setBuffer(data.buffer)
+            setWind(data.wind)
+            
+        })
+        
+    }
+   
     
     return (
         <div> 
-          <p>Current wind {values.wind}</p>
-          <p>Current production {values.production}</p> 
-          <p>Current consumtion {values.consumption}</p> 
-          <p>Current net production {values.net_production}</p> 
-          <p>Current battery level {values.battery}</p> 
-          <p>Current marketprice {values.marketprice}</p>   
+          <p>Current wind: {wind} </p>
+          <p>Current production: {production} </p> 
+          <p>Current consumtion: {consumption} </p> 
+          <p>Current buffer: {buffer} </p> 
         </div>
     )
 }
 
-export default useProsumerOverview
+export default ProsumerOverview

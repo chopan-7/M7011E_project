@@ -4,25 +4,22 @@ import Cookies from 'universal-cookie'
 
 const cookies = new Cookies()
 const jwt = require("jsonwebtoken")
-const Overview = () =>{
-    const [production, setProduction] = useState('');
-    const [consumption, setConsumption] = useState('');
-    const [buffer, setBuffer] = useState('');
-    const [wind, setWind] = useState('');
-    
 
-    const url = 'http://localhost:8000/api/prosumer'
+const ProsumerControll = () =>{
+    const [buyratio, setBuyratio] = useState('');
+    const [sellratio, setSellratio] = useState('');
 
-    useEffect(() => { // kanske asyn sen ?
-        getOverview()
-        setInterval(()=>{getOverview()},10000)
+
+    useEffect(() => { 
+        getRatios()
+        //setInterval(()=>{getRatios()},10000)
     }, [])
 
-    const getOverview = () => {
-        
+
+    const getRatios = () => {
+
         const getToken = cookies.get('accessToken')
         const tokendata = jwt.verify(getToken, "Security is always excessive until it's not enough.")
-        
         axios({
             method: 'post',
             url: 'http://localhost:8000/api/prosumer',
@@ -45,24 +42,22 @@ const Overview = () =>{
             const data = response.data.data.prosumerData 
             
             
-            setProduction(data.production)
-            setConsumption(data.consumption)
-            setBuffer(data.buffer)
-            setWind(data.wind)
+            setBuyratio(data.buyratio)
+            setSellratio(data.sellratio)
+            
             
         })
-        
+
     }
-   
     
-    return (
-        <div> 
-          <p>Current wind: {wind} </p>
-          <p>Current production: {production} </p> 
-          <p>Current consumtion: {consumption} </p> 
-          <p>Current buffer: {buffer} </p> 
-        </div>
-    )
+
+
+
+
+
+
+
+
 }
 
-export default Overview
+export default ProsumerControll
