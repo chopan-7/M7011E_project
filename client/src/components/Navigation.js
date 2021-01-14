@@ -19,7 +19,6 @@ const Navigation = () => {
       return (
          <div>
             <NavLink to="/manager" style={{ marginRight: 10 }}>Overview</NavLink>
-            <NavLink to="/manager_options" style={{ marginRight: 10 }}>Manager options</NavLink>
             <NavLink to="/manager_users" style={{ marginRight: 10 }}>User settings</NavLink>
             <NavLink to="/logoff" style={{ marginRight: 10 }}>Logout</NavLink>
          </div>

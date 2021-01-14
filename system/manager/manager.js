@@ -155,6 +155,23 @@ class Manager {
         return this.data
     }
 
+    getManagerInfo(id){
+        return new Promise((resolve, reject) => {
+            this.users.getAllWhere("id="+id).then((user) => {
+                const states = ['Stopped', 'Starting', 'Running']
+                var state = states[this.data.state]
+                var userResult = {
+                    "id": user[0].id,
+                    "name": user[0].name,
+                    "email": user[0].email,
+                    "role": AppSettings.database.roles[user[0].role],
+                    "state": state
+                }
+                resolve(userResult)
+            })
+        })
+    }
+
     managerStartStop(id) {
         // start/stop production depending on current state
         return new Promise((resolve, reject) => {

@@ -12,6 +12,7 @@
     "bootstrap": "^4.5.3",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
+    "react-bootstrap-range-slider": "^2.0.2",
     "react-bs-notifier": "^6.0.0",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",

@@ -10,7 +10,6 @@ import Navigation from './components/Navigation';
 
 // Manager components
 import ManagerOverview from './pages/manager/ManagerOverview';
-import ManagerOptions from './pages/manager/ManagerOptions';
 import ManagerUsers from './pages/manager/ManagerUsers'
 
 import ProsumerPage from './pages/prosumer/ProsumerPage';
@@ -44,7 +43,6 @@ class App extends Component {
              <Route path="/prosumer_user" component={ProsumerUser} exact/>
 
              <Route path="/manager" component={ManagerOverview} exact/>
-             <Route path="/manager_options" component={ManagerOptions} exact/>
              <Route path="/manager_users" component={ManagerUsers} exact />
            </Switch>
         </div> 

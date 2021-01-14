@@ -61,6 +61,7 @@ class LoginForm extends React.Component {
     }
 
     loginUser(email, password, userRole) {
+        alert(userRole)
         return new Promise((resolve, reject) => {
             axios({
                 method: 'post',

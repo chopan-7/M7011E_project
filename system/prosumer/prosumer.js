@@ -287,6 +287,7 @@ class Prosumer {
     }
 
     setBufferRatio(id, data){
+        console.log(data)
         data = JSON.parse(JSON.stringify(data)) // data = {id, input {buy, selll}}
         // update buffer ratio if user is authenticated
         return new Promise((resolve, reject) => {
@@ -322,6 +323,23 @@ class Prosumer {
                     res.push(user)
                 })
                 resolve(res)
+            })
+        })
+    }
+
+    getProsumerInfo(id){
+        return new Promise((resolve, reject) => {
+            this.users.getAllWhere("id="+id).then((user) => {
+                var state = async () => await this.uSettings.getWhere("state", "user_id="+id).then((res) => AppSettings.database.states[res.state])
+                var userResult = {
+                    "id": user[0].id,
+                    "name": user[0].name,
+                    "email": user[0].email,
+                    "role": AppSettings.database.roles[user[0].role],
+                    "state": state
+                }
+                console.log(userResult)
+                resolve(userResult)
             })
         })
     }
