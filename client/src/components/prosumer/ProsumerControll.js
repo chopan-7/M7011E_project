@@ -6,14 +6,22 @@ const cookies = new Cookies()
 const jwt = require("jsonwebtoken")
 
 const ProsumerControll = () =>{
-    const [buyratio, setBuyratio] = useState('');
-    const [sellratio, setSellratio] = useState('');
+    const [buy_ratio, setBuyratio] = useState('');
+    const [sell_ratio, setSellratio] = useState('');
 
 
     useEffect(() => { 
         getRatios()
         //setInterval(()=>{getRatios()},10000)
     }, [])
+
+    const ChangeBuyRatio = e => {
+       
+    }
+
+    const ChangeSellRatio = e => {
+       
+    }
 
 
     const getRatios = () => {
@@ -28,10 +36,9 @@ const ProsumerControll = () =>{
                     prosumerData(id:${tokendata.userid}, input:{
                         access:"${getToken}"
                     }){
-                        production
-                        consumption
-                        buffer
-                        wind
+                        buy_ratio
+                        sell_ratio
+                                                
                     }
                 }`
             }
@@ -42,20 +49,49 @@ const ProsumerControll = () =>{
             const data = response.data.data.prosumerData 
             
             
-            setBuyratio(data.buyratio)
-            setSellratio(data.sellratio)
+            setBuyratio(data.buy_ratio)
+            setSellratio(data.sell_ratio)
             
             
         })
+        
 
     }
-    
+    return (
+        <div>
+            
 
+            <div>
+                <p> Current buy ratio: {buy_ratio} </p>
+                <label>
+                Change buy ratio to: 
+                </label>
+                <input                    
+                    type = "number"                    
+                    min = "0.00"
+                    max = "1.00"
+                    step = "0.01"
+                    onChange={ChangeBuyRatio}
+                />
 
+            </div>
 
-
-
-
+            <div>
+                <p> Current sell ratio: {sell_ratio} </p>
+                <label>
+                Change sell ratio to:
+                </label>
+                <input
+                    type = "number"                
+                    min = "0.00"
+                    max = "1.00"
+                    step = "0.01"
+                    onChange={ChangeSellRatio}
+                />        
+            </div>
+        </div>
+        
+    )
 
 
 }
