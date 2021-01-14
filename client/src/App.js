@@ -9,15 +9,14 @@ import Navigation from './components/Navigation';
 
 
 // Manager components
-import Manager from './pages/manager/index'
+import ManagerOverview from './pages/manager/ManagerOverview';
+import ManagerOptions from './pages/manager/ManagerOptions';
+import ManagerUsers from './pages/manager/ManagerUsers'
 
 import ProsumerPage from './pages/prosumer/ProsumerPage';
 import ProsumerOptions from './pages/prosumer/ProsumerOptions';
 import ProsumerUser from './pages/prosumer/ProsumerUser';
 
-import ManagerPage from './pages/manager/ManagerPage';
-import ManagerOptions from './pages/manager/ManagerOptions';
-import ManagerUser from './pages/manager/ManagerUser';
  
 
 class App extends Component {
@@ -37,17 +36,16 @@ class App extends Component {
              <Route path="/" component={Start} exact/>
              <Route path="/register" component={Register} exact/>
              <Route path="/login" component={Login} exact/>
+             <Route path="/manager_register" component={Register} exact/>
+             <Route path="/login_manager" component={Login} exact/>
 
              <Route path="/prosumer" component={ProsumerPage} exact/>
              <Route path="/prosumer_options" component={ProsumerOptions} exact/>
              <Route path="/prosumer_user" component={ProsumerUser} exact/>
 
-             <Route path="/manager" component={ManagerPage} exact/>
+             <Route path="/manager" component={ManagerOverview} exact/>
              <Route path="/manager_options" component={ManagerOptions} exact/>
-             <Route path="/manager_user" component={ManagerUser} exact/>
-             <Route path="/manager_register" component={Register} exact/>
-             <Route path="/manager_login" component={Login} exact/>
-             <Route path="/manager/overview" component={Manager} exact />
+             <Route path="/manager_users" component={ManagerUsers} exact />
            </Switch>
         </div> 
       </BrowserRouter>
