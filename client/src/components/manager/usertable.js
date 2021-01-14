@@ -47,6 +47,7 @@ class UserTable extends React.Component {
               email
               role
               state
+              online
             }
           }`
         }
@@ -59,7 +60,7 @@ class UserTable extends React.Component {
   renderUserList(){
     return(
       this.state.userList.map( (user, index) => {
-        const {id, name, email, role, state } = user
+        const {id, name, email, role, state, online } = user
         return(
           <tr key={id}>
             <td>{id}</td>
@@ -67,6 +68,7 @@ class UserTable extends React.Component {
             <td>{email}</td>
             <td>{role}</td>
             <td>{state}</td>
+            <td>{online==true?'Online':'Offline'}</td>
           </tr>
         )
       })
@@ -85,6 +87,7 @@ class UserTable extends React.Component {
             <th>Email</th>
             <th>Role</th>
             <th>State</th>
+            <th>Online</th>
           </tr>
           {this.renderUserList()}
         </thead>

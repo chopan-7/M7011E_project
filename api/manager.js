@@ -10,11 +10,13 @@ const manager = new Manager()
 var managerSchema = buildSchema(`
     type ManagerData {
         state: Int!
+        currentProduction: Float!
         buffer: Float!
         bufferRatio: Float!
         currentPrice: Float!
         marketDemand: Float!
         prosumerOutage: Int!
+
         
     }
 
@@ -60,7 +62,7 @@ var managerSchema = buildSchema(`
     type Mutation {
         startProduction(id: Int!, input: inputTokens): StatusMsg!
         authenticate(email: String!, password: String!): AuthMsg!
-        signOut(id: Int!, input: inputTokens): AuthMsg!
+        signOut(input: inputTokens): AuthMsg!
         setCurrentPrice(id: Int!, price: Float!, input: inputTokens): StatusMsg!
         setBufferRatio(id: Int!, ratio: Float!, input: inputTokens): StatusMsg!
         addToMarket(id: Int!, amount: Float!, input: inputTokens): Boolean!
@@ -92,9 +94,9 @@ var managerRoot = {
     },
     signOut: (args) => {
         const getToken = verifyToken(args.input.access)
-        if(getToken.verified && args.id === getToken.data.id) {
+        if(getToken.verified) {
             // signOut user from db
-            manager.signOut(args.id)
+            manager.signOut(getToken.data.id)
             return ({
                 status: true,
                 message: 'Bye',

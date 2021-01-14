@@ -318,7 +318,8 @@ class Prosumer {
                         "name": post.name,
                         "email": post.email,
                         "role": AppSettings.database.roles[post.role],
-                        "state": state
+                        "state": state,
+                        "online": post.online == 0?false:true
                     }
                     res.push(user)
                 })
@@ -341,7 +342,6 @@ class Prosumer {
                     }
                     resolve(userResult)
                 })
-
             })
         })
     }

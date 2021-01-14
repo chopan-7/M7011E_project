@@ -1,9 +1,15 @@
 import React from 'react';
  
-import { NavLink } from 'react-router-dom';
+import { NavLink} from 'react-router-dom';
+import { store } from 'react-notifications-component'
+import getFromCookie from './tokenHandler'
+import Cookies from 'universal-cookie'
 
 const currentPage = window.location.href.split('/') // current URL for displaying nav-bar
 const endPoint = currentPage[currentPage.length - 1].split('_')[0]
+const axios = require('axios')
+
+const cookies = new Cookies()
  
 const Navigation = () => {
    if(endPoint === 'prosumer'){
@@ -12,7 +18,7 @@ const Navigation = () => {
             <NavLink to="/prosumer" style={{ marginRight: 10 }}>Overview</NavLink>
             <NavLink to="/prosumer_options" style={{ marginRight: 10 }}>Prosumer options</NavLink>
             <NavLink to="/prosumer_user" style={{ marginRight: 10 }}>User settings</NavLink>
-            <NavLink to="/logoff" style={{ marginRight: 10 }}>Logout</NavLink>
+            <NavLink to="/logoff" onClick={logoff} style={{ marginRight: 10 }}>Logout</NavLink>
          </div>
       );
    } else if ( endPoint === 'manager') {
@@ -20,7 +26,7 @@ const Navigation = () => {
          <div>
             <NavLink to="/manager" style={{ marginRight: 10 }}>Overview</NavLink>
             <NavLink to="/manager_users" style={{ marginRight: 10 }}>User settings</NavLink>
-            <NavLink to="/logoff" style={{ marginRight: 10 }}>Logout</NavLink>
+            <NavLink to="/logoff" onClick={logoff} style={{ marginRight: 10 }}>Logout</NavLink>
          </div>
       );
    } else {
@@ -33,6 +39,49 @@ const Navigation = () => {
       );
    }
 
+}
+
+const logoff = () => {
+   // sign off user
+   const getToken = getFromCookie('accessToken')
+   axios({
+      method: 'post',
+      url: 'http://localhost:8000/api/'+endPoint,
+      data: {
+         query: `mutation {
+            signOut(input: {access: "${getToken.token}"}){
+               status
+               message
+               tokens {
+                  access
+                  refresh
+               }
+            }
+         }`
+      }
+   }).then((res) => {
+      // update cookie to invalid
+      const resData = res.data.data.signOut
+      if(resData.tokens != null) {
+         
+         cookies.set('accessToken', resData.tokens.access, {path: '/'})
+         cookies.set('refreshToken', resData.tokens.refresh, {path: '/'})
+     }
+
+      store.addNotification({
+         title: "Bye",
+         message: "Logging off!",
+         type: "success",
+         insert: "top",
+         container: "top-right",
+         animationIn: ["animate__animated", "animate__fadeIn"],
+         animationOut: ["animate__animated", "animate__fadeOut"],
+         dismiss: {
+           duration: 2000,
+           onScreen: true
+         }
+       })
+   })
 }
  
 export default Navigation;

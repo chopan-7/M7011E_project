@@ -1,6 +1,5 @@
 import React from 'react'
-import { Form } from 'react-bootstrap'
-import getFromCookie from '../tokenHandler'
+import getFromCookie from '../../components/tokenHandler'
 
 const axios = require('axios')
 
@@ -8,15 +7,17 @@ class Overview extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            plantState: '',
+            // plantState: '',
+            currentProduction: '',
             marketDemand: '',
             prosumerOutage: '',
             currentMarketPrice: '',
-            buffer: '',
-            buffer_ratio: ''
+            buffer: ''
           }
 
         this.getData()
+
+
     }
 
     getData() {
@@ -30,10 +31,11 @@ class Overview extends React.Component {
                 query: `query {
                     managerData(input: {access: "${getToken.token}"}) {
                         state
+                        currentProduction
                         marketDemand
                         prosumerOutage
                         currentPrice
-                        bufferRatio
+                        buffer
                       }
                 }`
             }
@@ -41,11 +43,12 @@ class Overview extends React.Component {
         .then((response) => {
             const data = response.data.data.managerData
             this.setState({
-                plantState: data.state,
+                // plantState: data.state,
+                currentProduction: data.currentProduction,
                 marketDemand: data.marketDemand,
                 prosumerOutage: data.prosumerOutage,
                 currentMarketPrice: data.currentPrice,
-                buffer_ratio: data.buffer_ratio
+                buffer: data.buffer
             })
         })
     }
@@ -55,11 +58,13 @@ class Overview extends React.Component {
           <div className="ManagerOverview">
             <div className="Overview">
               <h3>Overview</h3>
-              <p>Coal plant state: {this.state.plantState}</p>
+              <p>Coal plant state: {this.props.plantState}</p>
+              <p>Current production: {this.state.currentProduction}</p>
               <p>Market demand: {this.state.marketDemand}</p>
               <p>Prosumer outage: {this.state.prosumerOutage}</p>
               <p>Current marketprice: {this.state.currentMarketPrice}</p>
-              <p>Buffer ratio: {this.state.buffer_ratio}</p>
+              {/* <p>Current marketprice: {this.props.currentPrice}</p> */}
+              <p>Buffer: {this.state.buffer}</p>
             </div>
           </div>
         );

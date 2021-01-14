@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import './App.css'
  
 import Start from './pages/Start';
@@ -44,6 +44,9 @@ class App extends Component {
 
              <Route path="/manager" component={ManagerOverview} exact/>
              <Route path="/manager_users" component={ManagerUsers} exact />
+             <Route exact path="/logoff">
+               <Redirect to="/"/>
+             </Route>
            </Switch>
         </div> 
       </BrowserRouter>
