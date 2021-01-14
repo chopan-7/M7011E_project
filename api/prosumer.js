@@ -13,6 +13,8 @@ var prosumerSchema = buildSchema(`
         production: Float!
         consumption: Float!
         buffer: Float!
+        buy_ratio: Float!
+        sell_ratio: Float!
         wind: Float!
     }
 

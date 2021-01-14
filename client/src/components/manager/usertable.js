@@ -28,7 +28,11 @@ class UserTable extends React.Component {
 
   // get userid from token
   verifyToken(token){
-    return jwt.verify(token, "Security is always excessive until it's not enough.").userid
+    try{
+      return jwt.verify(token, "Security is always excessive until it's not enough.").userid
+    } catch(err){
+      return err
+    }
   }
 
   getUsers(){
@@ -72,7 +76,7 @@ class UserTable extends React.Component {
   render() {
     return (
       <div className="ManagerPage">
-      <h1>Manager overview</h1>
+      <h1>User list</h1>
       <Table stripped bordered hover id={this.userList}>
         <thead>
           <tr>

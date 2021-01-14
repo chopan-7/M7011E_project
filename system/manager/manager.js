@@ -37,7 +37,7 @@ class Manager {
                     var accessToken = jwt.sign(
                         {"userid": auth[1].id},
                         AppSettings.secrets.access,
-                        {expiresIn: '15min'})
+                        {expiresIn: '24h'})
                     
                     var refreshToken = jwt.sign(
                         {"userid": auth[1].id},

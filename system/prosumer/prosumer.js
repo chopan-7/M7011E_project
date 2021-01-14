@@ -270,7 +270,7 @@ class Prosumer {
     /* ------------------------------- API FUNCTIONS START ------------------------------ */
     getData(id) {
         return new Promise((resolve, reject) => {
-            this.uSettings.getWhere("buffer", "user_id="+id)
+            this.uSettings.getWhere("buffer, buy_ratio, sell_ratio ", "user_id="+id)
             .then((res) => {
                 var prosumerdata = this.prosumerData.find(obj => obj.id == id)
                 resolve ({
@@ -278,6 +278,8 @@ class Prosumer {
                     "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
                     "consumption": prosumerdata.consumption[this.ticks],
                     "buffer": res.buffer,
+                    "buy_ratio": res.buy_ratio,
+                    "sell_ratio": res.sell_ratio,
                     "wind": prosumerdata.wind[this.ticks]
                 })
             })
