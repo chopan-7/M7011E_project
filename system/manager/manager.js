@@ -11,6 +11,7 @@ class Manager {
         // manager parameters
         this.data = {
             "state": 0,     // 0 = off, 1 = starting, 2 = running
+            "currentProduction": 0,
             "buffer": 0,    // Manager buffer
             "bufferRatio": 1,
             "currentPrice": 1,
@@ -111,6 +112,7 @@ class Manager {
         setTimeout(() => {
             console.log("Production stopped.")
             this.data.state = 0
+            this.data.currentProduction = 0
             return this.data.state
         }, AppSettings.manager.startupTime)
     }
@@ -119,6 +121,9 @@ class Manager {
         // portion the daily production
         var toBuffer = AppSettings.manager.production*this.data.bufferRatio
         var toMarket = AppSettings.manager.production-toBuffer
+
+        // set current production
+        this.data.currentProduction = toMarket
         
         // fill the buffer if bufferCap is reached and add the remaining to the market
         if((this.data.buffer+toBuffer) > AppSettings.manager.bufferCap){
@@ -179,14 +184,14 @@ class Manager {
                 var res = {"status": undefined, "message": undefined}
                 if (this.data.state == 0 && auth) {
                     this.startProduction()
-                    res.stauts = true
-                    res.message = `Starting production, est. time: ${AppSettings.manager.startupTime} sec.`
+                    res.status = true
+                    res.message = `Starting production, est. time: ${AppSettings.manager.startupTime/1000} sec.`
                 } else if (auth) {
                     this.stopProduction()
-                    res.stauts = true
-                    res.message = `Stopping production, est. time: ${AppSettings.manager.startupTime} sec.`
+                    res.status = true
+                    res.message = `Stopping production, est. time: ${AppSettings.manager.startupTime/1000} sec.`
                 } else {
-                    res.stauts = false
+                    res.status = false
                     res.message = `Could not execute task..`
                 }
                 resolve(res)

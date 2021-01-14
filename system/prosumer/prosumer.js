@@ -318,7 +318,8 @@ class Prosumer {
                         "name": post.name,
                         "email": post.email,
                         "role": AppSettings.database.roles[post.role],
-                        "state": state
+                        "state": state,
+                        "online": post.online == 0?false:true
                     }
                     res.push(user)
                 })
@@ -330,15 +331,16 @@ class Prosumer {
     getProsumerInfo(id){
         return new Promise((resolve, reject) => {
             this.users.getAllWhere("id="+id).then((user) => {
-                var state = async () => await this.uSettings.getWhere("state", "user_id="+id).then((res) => AppSettings.database.states[res.state])
+                // var state = async () => await this.uSettings.getWhere("state", "user_id="+id).then((res) => AppSettings.database.states[res.state])
+                var state = async () => await this.uSettings.getWhere("state", "user_id="+id).then((res) => console.log(res.state))
                 var userResult = {
                     "id": user[0].id,
                     "name": user[0].name,
                     "email": user[0].email,
                     "role": AppSettings.database.roles[user[0].role],
-                    "state": state
+                    "state": state,
+                    "online": user[0].online == 0?false:true
                 }
-                console.log(userResult)
                 resolve(userResult)
             })
         })

@@ -24,6 +24,7 @@ var prosumerSchema = buildSchema(`
         email: String!
         role: String!
         state: String!
+        online: Boolean!
     }
 
     type StatusMsg {
@@ -75,7 +76,7 @@ var prosumerSchema = buildSchema(`
         register(input: RegisterUserData): Boolean!
         authenticate(email: String!, password: String!): AuthMsg
         setBufferRatio(id: Int!, input: BufferRatio): StatusMsg
-        signOut(id: Int!, input: inputTokens): AuthMsg
+        signOut(input: inputTokens): AuthMsg
     }
     `);
 
@@ -106,9 +107,9 @@ var prosumerRoot = {
     },
     signOut: (args) => {
         const getToken = verifyToken(args.input.access)
-        if(getToken.verified && args.id === getToken.data.id) {
+        if(getToken.verified) {
             // signOut user from db
-            prosumer.signOut(args.id)
+            prosumer.signOut(getToken.data.id)
             return ({
                 status: true,
                 message: 'Bye',

@@ -48,9 +48,9 @@ class LoginForm extends React.Component {
             } else {
                 alert('Welcome!')
                 if(userRole === 'manager') {
-                    this.props.history.push('/manager_users')    // redirect to manager page
+                    this.props.history.push('/manager')    // redirect to manager page
                 } else {
-                    this.props.history.push('/Login')    // redirect to prosumer page
+                    this.props.history.push('/prosumer')    // redirect to prosumer page
                 }
                 
             }
@@ -61,7 +61,6 @@ class LoginForm extends React.Component {
     }
 
     loginUser(email, password, userRole) {
-        alert(userRole)
         return new Promise((resolve, reject) => {
             axios({
                 method: 'post',
