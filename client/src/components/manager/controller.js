@@ -17,6 +17,7 @@ class Controller extends React.Component {
         this.state = {
             buffer_ratio: '',
             production_state: '',
+            production_stateText: 'idle',
             marketPrice: '',
             alert: '',
             alertShow: false,
@@ -29,6 +30,7 @@ class Controller extends React.Component {
     }
 
     handleStartStop(){
+        // update Production state
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'POST',
@@ -48,10 +50,22 @@ class Controller extends React.Component {
                 var changeType
                 if(this.state.production_state === 0) {
                     changeType = 'success'
-                    this.setState({production_state: 1})
+                    this.setState({
+                        production_state: 1,
+                        production_stateText: 'Starting production...'
+                    })
+                    setTimeout(() => {
+                        this.setState({production_prevState: 'Producing'})
+                    }, 30000)
                 } else {
                     changeType = 'danger'
-                    this.setState({production_state: 1})
+                    this.setState({
+                        production_state: 1,
+                        production_stateText: 'Shutting down production..'
+                    })
+                    setTimeout(() => {
+                        this.setState({production_prevState: 'Idle'})
+                    }, 30000)
                 }
                 // const changeType = this.state.production_state === 0?'success':'danger'
                 store.addNotification({
@@ -102,8 +116,7 @@ class Controller extends React.Component {
                 alertShow: true,
                 alertMessage: 'Buffer ratio must be <= 100'
             })
-        }
-
+        } else {
         // update value via API
         const getToken = getFromCookie('accessToken')
         axios({
@@ -140,12 +153,13 @@ class Controller extends React.Component {
                     animationIn: ["animate__animated", "animate__fadeIn"],
                     animationOut: ["animate__animated", "animate__fadeOut"],
                     dismiss: {
-                      duration: 5000,
+                      duration: 2000,
                       onScreen: true
                     }
                   })
             }
         })
+        }
 
         event.preventDefault()
     }
@@ -171,6 +185,7 @@ class Controller extends React.Component {
             const data = response.data.data.managerData
             this.setState({
                 production_state: data.state,
+                production_stateText: data.state === 0?'Idle':'Producing',
                 buffer_ratio: data.bufferRatio*100,
                 marketPrice: data.currentPrice
             })
@@ -180,7 +195,7 @@ class Controller extends React.Component {
     render() {
         return(
             <div className={Controller}>
-                <Overview plantState={this.state.production_state} currentPrice={this.state.marketPrice}/>
+                <Overview plantState={this.state.production_stateText} currentPrice={this.state.marketPrice}/>
                 <h3>Controller</h3>
                 <div class="controll_panel">
                 <Form onSubmit={this.handleSubmit}>

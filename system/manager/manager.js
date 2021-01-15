@@ -157,6 +157,10 @@ class Manager {
     getData(id){
         // refresh currentMarketDemand
         this.currentMarketDemand()
+
+        if(this.data.state === 0){
+            this.data.currentProduction = 0
+        }
         // return this.data
         return new Promise((resolve, reject) => {
             this.isAuthenticated(id).then((auth) =>{
@@ -189,7 +193,43 @@ class Manager {
                         reject("No access to data")
                     }
                 })
-                // resolve(userResult)
+            })
+        })
+    }
+
+    managerBlockUser(id, time) {
+        return new Promise((resolve, reject) => {
+            // set sell ratio of user to 0
+            this.uSettings.getById(id).then((user) => {
+                const currentRatio = user.sell_ratio;
+                this.uSettings.updateSellRatio(id, 0).then((res) => {
+                    console.log("blocking user..."+id)
+                    // reset the sell_ratio after 30 sec
+                    setTimeout(() => {
+                        this.uSettings.updateSellRatio(id, currentRatio)
+                        .then((res) => {
+                            console.log('Unblocking user..'+id)
+                            resolve({status: true, message: 'user '+id+' was blocked for '+time/1000+' seconds'})
+                        })
+                    }, time)
+                })
+            })
+        })
+    }
+
+    managerDeleteUser(id, manId) {
+        return new Promise((resolve, reject) => {
+            //Delete user settings and data
+            this.isAuthenticated(manId).then((auth) => {
+                if(!auth){
+                    resolve({status: false, message: 'Unauthorized action.'})
+                }
+                this.uSettings.delete(id).then(() => {
+                    this.users.delete(id)
+                    .then(() => resolve({status: true, message: 'User deleted'}))
+                    .catch((err) => reject({status: false, message: 'Could not delete user from user.'}))
+                })
+                .catch((err) => reject({status: false, message: 'Could not delete user from user and settings.'}))
             })
         })
     }
@@ -253,6 +293,21 @@ class Manager {
             })
         })
 
+    }
+
+    registerManager(args) {
+        var input = args.input
+        return new Promise((resolve, reject) => {
+            var createUser = this.users.create(
+                input.name,
+                input.email,
+                input.password,
+                input.picture,
+                AppSettings.database.roles.indexOf("manager"),
+                "Luleå",
+                0
+            )
+        })
     }
 
     /* The following functions are for Prosumer backend system */

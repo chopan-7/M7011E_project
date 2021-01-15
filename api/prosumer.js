@@ -52,6 +52,7 @@ var prosumerSchema = buildSchema(`
         name: String!
         email: String!
         password: String!
+        picture: String
     }
 
     type Query {
@@ -83,7 +84,7 @@ var prosumerSchema = buildSchema(`
 var prosumerRoot = {
     prosumerData: (args) => {
         const getToken = verifyToken(args.input.access)
-        if(getToken.verified && args.id === getToken.data.id) {
+        if(getToken.verified) {
             return prosumer.getData(args.id)
         }
     },
@@ -95,7 +96,7 @@ var prosumerRoot = {
     },
     getProsumerInfo: (args) => {
         const getToken = verifyToken(args.input.access)
-        if(getToken.verified && args.id === getToken.data.id) {
+        if(getToken.verified) {
             return prosumer.getProsumerInfo(args.id)
         }
     },

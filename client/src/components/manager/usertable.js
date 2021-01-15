@@ -1,47 +1,45 @@
 // Overview page
 import React from 'react'
-import Cookie from 'universal-cookie'
-import jwt from 'jsonwebtoken'
+import {Button, Badge} from 'react-bootstrap'
+import getFromCookie from '../tokenHandler'
+import { store } from 'react-notifications-component';
+import UserModal from './userModal'
+import DeleteUserBtn from './userDelete'
+import {addJobToCookie} from '../cookieHandler'
 
 
 // components
 import Table from 'react-bootstrap/Table'
 
 const axios = require('axios')
-const cookie = new Cookie()
 
 class UserTable extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      id: this.verifyToken(cookie.get('accessToken')),  // userid from cookie-token
-      userList: []
+      userList: [],
+      userData: []
     }
 
     this.getUsers()
 
-    // update userList every minute
-    setInterval(() => {
-      this.getUsers()
-    }, 60000)
+    // update userList every 5 seconds
+    addJobToCookie(
+      setInterval(() => {
+        this.getUsers()
+      }, 5000)
+    )
   }
 
-  // get userid from token
-  verifyToken(token){
-    try{
-      return jwt.verify(token, "Security is always excessive until it's not enough.").userid
-    } catch(err){
-      return err
-    }
-  }
 
   getUsers(){
+      const getToken = getFromCookie('accessToken')
       axios({
         method: 'POST',
         url: 'http://localhost:8000/api/prosumer',
         data: {
           query: `query {
-            getAllProsumer(input: {access: "${cookie.get('accessToken')}"}){
+            getAllProsumer(input: {access: "${getToken.token}"}){
               id
               name
               email
@@ -57,6 +55,54 @@ class UserTable extends React.Component {
       })
   }
 
+  blockUser(id) {
+    const getToken = getFromCookie('accessToken')
+
+    // Send block request to API and notify user
+    store.addNotification({
+      title: "Blocking...",
+      message: "Blocking user id "+id+" from selling electricity.",
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      animationIn: ["animate__animated", "animate__fadeIn"],
+      animationOut: ["animate__animated", "animate__fadeOut"],
+      dismiss: {
+        duration: 30000,
+        onScreen: true
+      }
+    })
+
+    axios({
+      method: 'POST',
+      url: 'http://localhost:8000/api/manager',
+      data: {
+        query: `mutation {
+          blockUser(id: ${id}, time: 30000, input: {access: "${getToken.token}"}){
+            status
+            message
+          }
+        }`
+      }
+    }).then((response) => {
+      const res = response.data.data.blockUser
+      // notify once response is received
+      store.addNotification({
+        title: "Done!",
+        message: res.message,
+        type: "success",
+        insert: "top",
+        container: "top-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: true
+        }
+      })
+    })
+  }
+
   renderUserList(){
     return(
       this.state.userList.map( (user, index) => {
@@ -68,18 +114,22 @@ class UserTable extends React.Component {
             <td>{email}</td>
             <td>{role}</td>
             <td>{state}</td>
-            <td>{online==true?'Online':'Offline'}</td>
+            <td><Badge pill variant={online===true?'success':'secondary'}>{online===true?'Online':'Offline'}</Badge></td>
+            <td>
+              <UserModal userid={id}/>
+              <Button variant="warning" size="sm" style={{ marginRight: 10 }} onClick={() => this.blockUser(id)}>Block</Button>
+              <DeleteUserBtn userid={id} />
+            </td>
           </tr>
-        )
-      })
-    )
+        )}
+    ))
   }
 
   render() {
     return (
       <div className="ManagerPage">
       <h1>User list</h1>
-      <Table stripped bordered hover id={this.userList}>
+      <Table striped bordered hover size={'sm'}>
         <thead>
           <tr>
             <th>#</th>
@@ -88,9 +138,10 @@ class UserTable extends React.Component {
             <th>Role</th>
             <th>State</th>
             <th>Online</th>
+            <th>Actions</th>
           </tr>
-          {this.renderUserList()}
         </thead>
+        {this.renderUserList()}
       </Table>
       </div>
     );

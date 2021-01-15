@@ -5,30 +5,25 @@ import { store } from 'react-notifications-component'
 import getFromCookie from './tokenHandler'
 import {cookies, clearJobsFromCookie} from './cookieHandler'
 
-var currentPage = window.location.href.split('/') // current URL for displaying nav-bar
-var endPoint = currentPage[currentPage.length - 1].split('_')[0]
 const axios = require('axios')
 
-
- 
-const Navigation = () => {
-   if(endPoint === 'prosumer'){
+const Navigation = (props) => {
+   // Navbars for different states
+   if(props.type === 'prosumer'){
       return (
          <div>
             <NavLink to="/prosumer" style={{ marginRight: 10 }}>Overview</NavLink>
             <NavLink to="/prosumer_options" style={{ marginRight: 10 }}>Prosumer options</NavLink>
             <NavLink to="/prosumer_user" style={{ marginRight: 10 }}>User settings</NavLink>
-            <NavLink to="/logoff" onClick={logoff} style={{ marginRight: 10 }}>Logout</NavLink>
-            {endPoint}
+            <NavLink to="/logoff" onClick={() => logoff(props.type)} style={{ marginRight: 10 }}>Logout</NavLink>
          </div>
       );
-   } else if ( endPoint === 'manager') {
+   } else if ( props.type === 'manager') {
       return (
          <div>
             <NavLink to="/manager" style={{ marginRight: 10 }}>Overview</NavLink>
             <NavLink to="/manager_users" style={{ marginRight: 10 }}>User settings</NavLink>
-            <NavLink to="/logoff" onClick={logoff} style={{ marginRight: 10 }}>Logout</NavLink>
-            {endPoint}
+            <NavLink to="/logoff" onClick={() => logoff(props.type)} style={{ marginRight: 10 }}>Logout</NavLink>
          </div>
       );
    } else {
@@ -36,25 +31,24 @@ const Navigation = () => {
          <div>
             <NavLink to="/" style={{ marginRight: 10 }}>Home</NavLink>
             <NavLink to="/register" style={{ marginRight: 10 }}>Register</NavLink>
-            <NavLink to="/login" style={{ marginRight: 10 }}>Login</NavLink>
-            {endPoint}
+            <NavLink to="/login" style={{ marginRight: 10 }}>Prosumer</NavLink>
+            <NavLink to="/login_manager" style={{ marginRight: 10 }}>Manager</NavLink>
          </div>
       );
    }
 
 }
 
-const logoff = () => {
+// Sign out function
+const logoff = (from) => {
    // stop all intervals
    clearJobsFromCookie()
-   
-   // window.clearInterval(updateOverview)
 
    // sign off user
    const getToken = getFromCookie('accessToken')
    axios({
       method: 'post',
-      url: 'http://localhost:8000/api/'+endPoint,
+      url: 'http://localhost:8000/api/'+from,
       data: {
          query: `mutation {
             signOut(input: {access: "${getToken.token}"}){
