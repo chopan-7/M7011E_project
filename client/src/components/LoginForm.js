@@ -63,7 +63,7 @@ class LoginForm extends React.Component {
         return new Promise((resolve, reject) => {
             axios({
                 method: 'post',
-                url: 'http://localhost:8000/api/'+userRole,
+                url: '/api/'+userRole,
                 data: {
                     query: `mutation {
                         authenticate(email: "${email}", password: "${password}") {
