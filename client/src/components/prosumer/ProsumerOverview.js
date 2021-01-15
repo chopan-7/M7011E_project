@@ -67,8 +67,8 @@ const ProsumerOverview = () =>{
             }
         })
         .then((response2) => {
-            const data2 = response2.data.data.managerData 
-            setCurrentPrice(data2.currentPrice.toFixed(2))
+            const data2 = response2.data.data.getCurrentPrice
+            setCurrentPrice(data2.toFixed(2))
         })
 
         axios({
