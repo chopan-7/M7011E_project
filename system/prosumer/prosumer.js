@@ -35,7 +35,13 @@ class Prosumer {
             } else {
                 this.ticks += 1
             }
-            this.startProduction()  // recalculate the production for each prosumer
+            this.getProsumerList()
+            setTimeout( () => {
+                this.fetchAllData()
+            }, 1000)
+            setTimeout( () => {
+                this.startProduction()  // recalculate the production for each prosumer
+            }, 3000)
         }, AppSettings.simulator.duration.hour)
 
         // Message to console
@@ -45,7 +51,6 @@ class Prosumer {
 
     /* ------------------------------- USER FUNCTIONS BEGIN ----------------------------- */
     authenticate(email, password) {
-        console.log('Logging in...')
         return new Promise((resolve, reject) => {
             var role = AppSettings.database.roles.indexOf("prosumer")
             this.users.userAuth(email, password, role).then((auth) => {
@@ -53,12 +58,12 @@ class Prosumer {
                 if(auth[0]) {
                     // create access-token and refresh-token
                     var accessToken = jwt.sign(
-                        {"userid": auth[1].id, "email": auth[1].email},
+                        {"userid": auth[1].id},
                         AppSettings.secrets.access,
-                        {expiresIn: '15min'})
+                        {expiresIn: '24h'})
                     
                     var refreshToken = jwt.sign(
-                        {"userid": auth[1].id, "email": auth[1].email},
+                        {"userid": auth[1].id},
                         AppSettings.secrets.refresh,
                         {expiresIn: '7d'})
 
@@ -77,9 +82,9 @@ class Prosumer {
 
     isAuthenticated(id){
         return new Promise((resolve, reject) => {
-            var checkUser = this.users.getWhere("id, online", "id="+id)
+            var checkUser = this.users.getWhere("id, role", "id="+id)
             checkUser.then((user) => {
-                if(user[0].online == 1) {
+                if(user[0].role == AppSettings.database.roles.indexOf('prosumer')) {
                     resolve(true)
                 } else {
                     resolve(false)
@@ -89,18 +94,7 @@ class Prosumer {
     }
 
     signOut(id) {
-        return new Promise((resolve, reject) => {
-            var res = {"status": undefined, "message": undefined}
-            if(!this.isAuthenticated(id)){
-                res.message = "User not signed in.";
-                res.status = false
-            }else{
-                var updateStatus = this.users.signOut(id)
-                res.message = "Goodbye!";
-                res.status = true
-            }
-            resolve(res)
-        })
+        return this.users.signOut(id)
     }
 
     /* ------------------------------- USER FUNCTINOS END ---------------------------------- */
@@ -108,6 +102,7 @@ class Prosumer {
     /* ------------------------------- CORE FUNCTIONS START -------------------------------- */
     // populate prosumerlist from database
     async getProsumerList(){
+        this.prosumerList = new Array()
         var role = AppSettings.database.roles.indexOf("prosumer")
         var prosumers = await this.users.getWhere("id, name", "role="+role).then( (res) => {
             res.forEach(pro => {
@@ -167,7 +162,7 @@ class Prosumer {
                 var currentState = p.state
                 // change state to outtage of consumption > production+buffer
                 if(consumption > (production+this.prosumerData[index].buffer)) {
-                    this.uSettings.updateState(prosumer.id, AppSettings.database.roles.indexOf("outage"))
+                    this.uSettings.updateState(prosumer.id, AppSettings.database.states.indexOf("outage"))
                 } else {
                     // change state from to running if idle or outage
                     if(currentState == (AppSettings.database.states.indexOf("idle"))) {
@@ -218,8 +213,12 @@ class Prosumer {
             }
 
             // add to Market via API
+            var accessToken = jwt.sign(
+                {userid: id},
+                AppSettings.secrets.access,
+                {expiresIn: '1min'})
             var mutation = `mutation {
-                addToMarket(id: ${id}, amount: ${toGrid})
+                addToMarket(id: ${id}, amount: ${toGrid}, input: {access: "${accessToken}"})
             }`
             fetchFromMan(mutation)
 
@@ -243,8 +242,12 @@ class Prosumer {
             var fromGrid =  consumption*prosumerdata.buy_ratio  // buy amount from the grid
 
             // drain from Market via API
+            var accessToken = jwt.sign(
+                {userid: id},
+                AppSettings.secrets.access,
+                {expiresIn: '1min'})
             var mutation = `mutation {
-                drainMarket(id: ${id}, amount: ${fromGrid}) {
+                drainMarket(id: ${id}, amount: ${fromGrid}, input: {access: "${accessToken}"}) {
                     status
                     fromMarket
                 }
@@ -273,16 +276,25 @@ class Prosumer {
 
     /* ------------------------------- API FUNCTIONS START ------------------------------ */
     getData(id) {
-        var prosumerdata = async () => await this.prosumerData.find(obj => obj.id == id)
-        return {
-            "id": prosumerdata.id,
-            "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
-            "consumption": prosumerdata.consumption[this.ticks],
-            "wind": prosumerdata.wind[this.ticks]
-        }
+        return new Promise((resolve, reject) => {
+            this.uSettings.getWhere("buffer, buy_ratio, sell_ratio ", "user_id="+id)
+            .then((res) => {
+                var prosumerdata = this.prosumerData.find(obj => obj.id == id)
+                resolve ({
+                    "id": prosumerdata.id,
+                    "production": this.turbineGenerator(prosumerdata.wind[this.ticks]),
+                    "consumption": prosumerdata.consumption[this.ticks],
+                    "buffer": res.buffer,
+                    "buy_ratio": res.buy_ratio,
+                    "sell_ratio": res.sell_ratio,
+                    "wind": prosumerdata.wind[this.ticks]
+                })
+            })
+        })
     }
 
     setBufferRatio(id, data){
+        console.log(data)
         data = JSON.parse(JSON.stringify(data)) // data = {id, input {buy, selll}}
         // update buffer ratio if user is authenticated
         return new Promise((resolve, reject) => {
@@ -313,11 +325,30 @@ class Prosumer {
                         "name": post.name,
                         "email": post.email,
                         "role": AppSettings.database.roles[post.role],
-                        "state": state
+                        "state": state,
+                        "online": post.online == 0?false:true
                     }
                     res.push(user)
                 })
                 resolve(res)
+            })
+        })
+    }
+
+    getProsumerInfo(id){
+        return new Promise((resolve, reject) => {
+            this.users.getAllWhere("id="+id).then((user) => {
+                this.uSettings.getWhere("state", "user_id="+id).then((res) => {
+                    const state = AppSettings.database.states[res.state]
+                    var userResult = {
+                        "id": user[0].id,
+                        "name": user[0].name,
+                        "email": user[0].email,
+                        "role": AppSettings.database.roles[user[0].role],
+                        "state": state
+                    }
+                    resolve(userResult)
+                })
             })
         })
     }
@@ -329,14 +360,22 @@ class Prosumer {
                 input.name,
                 input.email,
                 input.password,
-                "default-user.jpg",
+                input.picture,
                 AppSettings.database.roles.indexOf("prosumer"),
                 "Luleå",
                 0
             )
             createUser.then((res) => {
                 if(res){
-                    console.log(res)
+                    this.uSettings.create(
+                        res.id, // user_id
+                        0,      // buffer
+                        0.5,    // buy_ratio
+                        0.5,    // sell_ratio
+                        0,      // consumption
+                        0,      // production
+                        2       // state
+                    )
                     resolve(true)
                 } else {
                     resolve(false)

@@ -2,19 +2,28 @@ var express = require('express');
 var router = express.Router();
 var { graphqlHTTP } = require('express-graphql');
 var { buildSchema } = require('graphql');
+const {verifyToken, unsignToken} = require('./validate');
 
 const Manager = require('../system/manager/manager')
 const manager = new Manager()
 
 var managerSchema = buildSchema(`
-    type Manager {
+    type ManagerData {
         state: Int!
+        currentProduction: Float!
         buffer: Float!
         bufferRatio: Float!
         currentPrice: Float!
         marketDemand: Float!
         prosumerOutage: Int!
-        
+    }
+
+    type ManagerInfo {
+        id: Int!
+        name: String!
+        email: String!
+        role: String!
+        state: String!
     }
 
     type MarketMsg {
@@ -39,44 +48,115 @@ var managerSchema = buildSchema(`
     }
 
     type Query {
-        managerData: Manager
+        managerData(input: inputTokens): ManagerData
+        managerInfo(id: Int!, input: inputTokens): ManagerInfo
+        getCurrentPrice(input: inputTokens): Float!
+    }
+
+    input inputTokens {
+        access: String
+        refress: String
+    }
+
+    input RegisterUserData {
+        name: String!
+        email: String!
+        password: String!
+        picture: String
     }
 
     type Mutation {
-        startProduction(id: Int!): StatusMsg!
+        startProduction(id: Int!, input: inputTokens): StatusMsg!
         authenticate(email: String!, password: String!): AuthMsg!
-        signOut(id: Int!): StatusMsg!
-        setCurrentPrice(id: Int!, price: Float!): StatusMsg!
-        setBufferRatio(id: Int!, ratio: Float!): StatusMsg!
-        addToMarket(id: Int!, amount: Float!): Boolean!
-        drainMarket(id: Int!, amount: Float!): MarketMsg
+        signOut(input: inputTokens): AuthMsg!
+        setCurrentPrice(id: Int!, price: Float!, input: inputTokens): StatusMsg!
+        setBufferRatio(id: Int!, ratio: Float!, input: inputTokens): StatusMsg!
+        addToMarket(id: Int!, amount: Float!, input: inputTokens): Boolean!
+        drainMarket(id: Int!, amount: Float!, input: inputTokens): MarketMsg
+        blockUser(id: Int!, time: Int!, input: inputTokens): StatusMsg!
+        deleteUser(id: Int!, input: inputTokens): StatusMsg!
+        registerManager(input: RegisterUserData): Boolean!
     }
     `);
 
 var managerRoot = {
-    managerData: () => {
-        return manager.getData()
+    managerData: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.getData(getToken.data.id)
+        }
+    },
+    managerInfo: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified && args.id === getToken.data.id) {
+            return manager.getManagerInfo(args.id)
+        }
     },
     startProduction: (args) => {
-        return manager.managerStartStop(args.id)
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified && args.id === getToken.data.id) {
+            return manager.managerStartStop(args.id)
+        }
     },
     authenticate: (args) => {
         return manager.authenticate(args.email, args.password)
     },
     signOut: (args) => {
-        return manager.signOut(args.id)
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            // signOut user from db
+            manager.signOut(getToken.data.id)
+            return ({
+                status: true,
+                message: 'Bye',
+                tokens: unsignToken(args.input.access)
+            })
+        }
+    },
+    getCurrentPrice: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.getCurrentPrice()
+        }
     },
     setCurrentPrice: (args) => {
-        return manager.setCurrentPrice(args.id, args.price)
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified && args.id === getToken.data.id) {
+            return manager.setCurrentPrice(args.id, args.price)
+        }
     },
     setBufferRatio: (args) => {
-        return manager.setBufferRatio(args.id, args.ratio)
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified && args.id === getToken.data.id) {
+            return manager.setBufferRatio(args.id, args.ratio)
+        }
     },
     addToMarket: (args) => {
-        return manager.addToMarket(args.id, args.amount)
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified && args.id === getToken.data.id) {
+            return manager.addToMarket(args.id, args.amount)
+        }
     },
     drainMarket: (args) => {
-        return manager.drainMarket(args.id, args.amount)
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified && args.id === getToken.data.id) {
+            return manager.drainMarket(args.id, args.amount)
+        }
+    },
+    blockUser: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.managerBlockUser(args.id, args.time)
+        }
+    },
+    deleteUser: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.managerDeleteUser(args.id, getToken.data.id)
+        }
+    },
+    registerManager: (args) => {
+        return manager.registerManager(args)
     }
   }
 

@@ -11,6 +11,7 @@ class Manager {
         // manager parameters
         this.data = {
             "state": 0,     // 0 = off, 1 = starting, 2 = running
+            "currentProduction": 0,
             "buffer": 0,    // Manager buffer
             "bufferRatio": 1,
             "currentPrice": 1,
@@ -35,12 +36,12 @@ class Manager {
                 if(auth[0]){
                     // create access-token and refres-token
                     var accessToken = jwt.sign(
-                        {"userid": auth[1].id, "email": auth[1].email},
+                        {"userid": auth[1].id},
                         AppSettings.secrets.access,
-                        {expiresIn: '15min'})
+                        {expiresIn: '24h'})
                     
                     var refreshToken = jwt.sign(
-                        {"userid": auth[1].id, "email": auth[1].email},
+                        {"userid": auth[1].id},
                         AppSettings.secrets.refresh,
                         {expiresIn: '7d'})
 
@@ -61,9 +62,9 @@ class Manager {
 
     isAuthenticated(id){
         return new Promise((resolve, reject) => {
-            var checkUser = this.users.getWhere("id, online", "id="+id)
+            var checkUser = this.users.getWhere("id, role", "id="+id)
             checkUser.then((user) => {
-                if(user[0].online == 1) {
+                if(user[0].role == AppSettings.database.roles.indexOf('manager')) {
                     resolve(true)
                 } else {
                     resolve(false)
@@ -73,18 +74,7 @@ class Manager {
     }
 
     signOut(id) {
-        return new Promise((resolve, reject) => {
-            var res = {"status": undefined, "message": undefined}
-            if(!this.isAuthenticated(id)){
-                res.message = "Manager not signed in.";
-                res.status = false
-            }else{
-                var updateStatus = this.users.signOut(id)
-                res.message = "Goodbye!";
-                res.status = true
-            }
-            resolve(res)
-        })
+        return this.users.signOut(id)
     }
 
     isProsumer(id) {
@@ -122,6 +112,7 @@ class Manager {
         setTimeout(() => {
             console.log("Production stopped.")
             this.data.state = 0
+            this.data.currentProduction = 0
             return this.data.state
         }, AppSettings.manager.startupTime)
     }
@@ -130,6 +121,9 @@ class Manager {
         // portion the daily production
         var toBuffer = AppSettings.manager.production*this.data.bufferRatio
         var toMarket = AppSettings.manager.production-toBuffer
+
+        // set current production
+        this.data.currentProduction = toMarket
         
         // fill the buffer if bufferCap is reached and add the remaining to the market
         if((this.data.buffer+toBuffer) > AppSettings.manager.bufferCap){
@@ -160,10 +154,84 @@ class Manager {
 
     /* ------------------------------- API FUNCTIONS START ------------------------------ */
     /* The following functions are for Manager front-end client */
-    getData(){
+    getData(id){
         // refresh currentMarketDemand
         this.currentMarketDemand()
-        return this.data
+
+        if(this.data.state === 0){
+            this.data.currentProduction = 0
+        }
+        // return this.data
+        return new Promise((resolve, reject) => {
+            this.isAuthenticated(id).then((auth) =>{
+                if(auth){
+                    resolve(this.data)
+                }else{
+                    reject("No access to data")
+                }
+                
+            })
+        })
+    }
+
+    getManagerInfo(id){
+        return new Promise((resolve, reject) => {
+            this.users.getAllWhere("id="+id).then((user) => {
+                const states = ['Stopped', 'Starting', 'Running']
+                var state = states[this.data.state]
+                var userResult = {
+                    "id": user[0].id,
+                    "name": user[0].name,
+                    "email": user[0].email,
+                    "role": AppSettings.database.roles[user[0].role],
+                    "state": state
+                }
+                this.isAuthenticated(id).then((auth) => {
+                    if(auth){
+                        resolve(userResult)
+                    } else {
+                        reject("No access to data")
+                    }
+                })
+            })
+        })
+    }
+
+    managerBlockUser(id, time) {
+        return new Promise((resolve, reject) => {
+            // set sell ratio of user to 0
+            this.uSettings.getById(id).then((user) => {
+                const currentRatio = user.sell_ratio;
+                this.uSettings.updateSellRatio(id, 0).then((res) => {
+                    console.log("blocking user..."+id)
+                    // reset the sell_ratio after 30 sec
+                    setTimeout(() => {
+                        this.uSettings.updateSellRatio(id, currentRatio)
+                        .then((res) => {
+                            console.log('Unblocking user..'+id)
+                            resolve({status: true, message: 'user '+id+' was blocked for '+time/1000+' seconds'})
+                        })
+                    }, time)
+                })
+            })
+        })
+    }
+
+    managerDeleteUser(id, manId) {
+        return new Promise((resolve, reject) => {
+            //Delete user settings and data
+            this.isAuthenticated(manId).then((auth) => {
+                if(!auth){
+                    resolve({status: false, message: 'Unauthorized action.'})
+                }
+                this.uSettings.delete(id).then(() => {
+                    this.users.delete(id)
+                    .then(() => resolve({status: true, message: 'User deleted'}))
+                    .catch((err) => reject({status: false, message: 'Could not delete user from user.'}))
+                })
+                .catch((err) => reject({status: false, message: 'Could not delete user from user and settings.'}))
+            })
+        })
     }
 
     managerStartStop(id) {
@@ -173,19 +241,23 @@ class Manager {
                 var res = {"status": undefined, "message": undefined}
                 if (this.data.state == 0 && auth) {
                     this.startProduction()
-                    res.stauts = true
-                    res.message = `Starting production, est. time: ${AppSettings.manager.startupTime} sec.`
+                    res.status = true
+                    res.message = `Starting production, est. time: ${AppSettings.manager.startupTime/1000} sec.`
                 } else if (auth) {
                     this.stopProduction()
-                    res.stauts = true
-                    res.message = `Stopping production, est. time: ${AppSettings.manager.startupTime} sec.`
+                    res.status = true
+                    res.message = `Stopping production, est. time: ${AppSettings.manager.startupTime/1000} sec.`
                 } else {
-                    res.stauts = false
+                    res.status = false
                     res.message = `Could not execute task..`
                 }
                 resolve(res)
             })
         })
+    }
+
+    getCurrentPrice(){
+        return this.data.currentPrice
     }
 
     setCurrentPrice(id, price) {
@@ -221,6 +293,21 @@ class Manager {
             })
         })
 
+    }
+
+    registerManager(args) {
+        var input = args.input
+        return new Promise((resolve, reject) => {
+            var createUser = this.users.create(
+                input.name,
+                input.email,
+                input.password,
+                input.picture,
+                AppSettings.database.roles.indexOf("manager"),
+                "Luleå",
+                0
+            )
+        })
     }
 
     /* The following functions are for Prosumer backend system */
