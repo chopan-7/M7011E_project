@@ -36,7 +36,7 @@ class UserTable extends React.Component {
       const getToken = getFromCookie('accessToken')
       axios({
         method: 'POST',
-        url: 'http://localhost:8000/api/prosumer',
+        url: '/api/prosumer',
         data: {
           query: `query {
             getAllProsumer(input: {access: "${getToken.token}"}){
@@ -75,7 +75,7 @@ class UserTable extends React.Component {
 
     axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/manager',
+      url: '/api/manager',
       data: {
         query: `mutation {
           blockUser(id: ${id}, time: 30000, input: {access: "${getToken.token}"}){

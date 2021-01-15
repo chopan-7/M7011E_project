@@ -27,7 +27,7 @@ const ProsumerOverview = () =>{
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/prosumer',
+            url: '/api/prosumer',
             data: {
                 query: `query{
                     prosumerData(id:${getToken.data.userid}, input:{
@@ -56,7 +56,7 @@ const ProsumerOverview = () =>{
 
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/manager',
+            url: '/api/manager',
             data: {
                 query: `query{
                     getCurrentPrice(input:{
@@ -72,7 +72,7 @@ const ProsumerOverview = () =>{
 
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/prosumer',
+            url: '/api/prosumer',
             data: {
                 query: `query{
                     getProsumerInfo(id:${getToken.data.userid}, input:{

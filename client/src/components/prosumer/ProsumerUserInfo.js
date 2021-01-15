@@ -42,7 +42,7 @@ const ProsumerUserInfo = () =>{
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/prosumer',
+            url: '/api/prosumer',
             data: {
                 query: `mutation {
                     updatePicture(picture: "${newPic}", input: {access: "${getToken.token}"})
@@ -78,7 +78,7 @@ const ProsumerUserInfo = () =>{
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/prosumer',
+            url: '/api/prosumer',
             data: {
                 query: `query{
                     getProsumerInfo(id:${getToken.data.userid}, input:{

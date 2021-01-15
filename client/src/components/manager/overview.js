@@ -27,7 +27,7 @@ class Overview extends React.Component {
         // fetch data form API
         axios({
             method: 'POST',
-            url: 'http://localhost:8000/api/manager',
+            url: '/api/manager',
             data: {
                 query: `query {
                     managerData(input: {access: "${getToken.token}"}) {

@@ -39,7 +39,7 @@ const ProsumerControll = () =>{
         const tokendata = jwt.verify(getToken, "Security is always excessive until it's not enough.")
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/prosumer',
+            url: '/api/prosumer',
             data: {
                 query: `query{
                     prosumerData(id:${tokendata.userid}, input:{
@@ -76,7 +76,7 @@ const ProsumerControll = () =>{
         const tokendata = jwt.verify(getToken, "Security is always excessive until it's not enough.")
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/prosumer',
+            url: '/api/prosumer',
             data: {
                 
                 query: `mutation {

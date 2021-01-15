@@ -35,7 +35,7 @@ const useRegister = (callback, validate) =>{
         setErrors(validate(values));
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/'+role,
+            url: '/api/'+role,
             data: {
                 query: `mutation {
                     register(input:{

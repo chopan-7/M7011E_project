@@ -35,7 +35,7 @@ class Controller extends React.Component {
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'POST',
-            url: 'http://localhost:8000/api/manager',
+            url: '/api/manager',
             data: {
                 query: `mutation{
                     startProduction(id: ${getToken.data.userid}, input: {access: "${getToken.token}"}){
@@ -122,7 +122,7 @@ class Controller extends React.Component {
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'POST',
-            url: 'http://localhost:8000/api/manager',
+            url: '/api/manager',
             data: {
                 query: `mutation {
                     setBufferRatio(id: ${getToken.data.userid}, ratio: ${this.state.buffer_ratio/100}, input: {access: "${getToken.token}"}) {
@@ -171,7 +171,7 @@ class Controller extends React.Component {
         // fetch data form API
         axios({
             method: 'POST',
-            url: 'http://localhost:8000/api/manager',
+            url: '/api/manager',
             data: {
                 query: `query {
                     managerData(input: {access: "${getToken.token}"}) {

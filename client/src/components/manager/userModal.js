@@ -39,7 +39,7 @@ function UserModal(props) {
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/prosumer',
+            url: '/api/prosumer',
             data: {
                 query: `query {
                     getProsumerInfo(id: ${props.userid}, input: {access: "${getToken.token}"})

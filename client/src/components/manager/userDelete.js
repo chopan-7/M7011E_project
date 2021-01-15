@@ -12,7 +12,7 @@ const DeleteUserBtn = (props) => {
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'POST',
-            url: 'http://localhost:8000/api/manager',
+            url: '/api/manager',
             data: {
                 query: `mutation {
                     deleteUser(id: ${props.userid}, input: {access: "${getToken.token}"}){

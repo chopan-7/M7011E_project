@@ -18,7 +18,7 @@ class ManagerInfo extends React.Component {
         const getToken = getFromCookie('accessToken')
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/manager',
+            url: '/api/manager',
             data: {
                 query: `query {
                     managerInfo(id: ${getToken.data.userid}, input: {access: "${getToken.token}"}) {

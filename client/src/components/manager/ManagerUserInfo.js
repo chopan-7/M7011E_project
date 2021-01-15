@@ -22,7 +22,7 @@ const ManagerUserInfo = () =>{
         
         axios({
             method: 'post',
-            url: 'http://localhost:8000/api/manager',
+            url: '/api/manager',
             data: {
                 query: `query{
                     getManagerInfo(id:${tokendata.userid}, input:{
