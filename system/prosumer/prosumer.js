@@ -35,7 +35,13 @@ class Prosumer {
             } else {
                 this.ticks += 1
             }
-            this.startProduction()  // recalculate the production for each prosumer
+            this.getProsumerList()
+            setTimeout( () => {
+                this.fetchAllData()
+            }, 1000)
+            setTimeout( () => {
+                this.startProduction()  // recalculate the production for each prosumer
+            }, 3000)
         }, AppSettings.simulator.duration.hour)
 
         // Message to console
@@ -76,9 +82,9 @@ class Prosumer {
 
     isAuthenticated(id){
         return new Promise((resolve, reject) => {
-            var checkUser = this.users.getWhere("id, online", "id="+id)
+            var checkUser = this.users.getWhere("id, role", "id="+id)
             checkUser.then((user) => {
-                if(user[0].online == 1) {
+                if(user[0].role == AppSettings.database.roles.indexOf('prosumer')) {
                     resolve(true)
                 } else {
                     resolve(false)
@@ -96,6 +102,7 @@ class Prosumer {
     /* ------------------------------- CORE FUNCTIONS START -------------------------------- */
     // populate prosumerlist from database
     async getProsumerList(){
+        this.prosumerList = new Array()
         var role = AppSettings.database.roles.indexOf("prosumer")
         var prosumers = await this.users.getWhere("id, name", "role="+role).then( (res) => {
             res.forEach(pro => {

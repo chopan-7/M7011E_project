@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button'
 import Cookies from 'universal-cookie'
 import Alert from 'react-bootstrap/Alert'
 
-import { withRouter } from 'react-router-dom'
+import { withRouter} from 'react-router-dom'
 
 const cookies = new Cookies()
 const axios = require('axios')
@@ -46,7 +46,6 @@ class LoginForm extends React.Component {
             if(res.status === false) {
                 this.setState({alert: 'danger', alertShow: true, alertMessage: 'Wrong email or password.'})
             } else {
-                alert('Welcome!')
                 if(userRole === 'manager') {
                     this.props.history.push('/manager')    // redirect to manager page
                 } else {

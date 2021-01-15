@@ -22,7 +22,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      signedIn: false
+      isAuthenticated: false
     }
   }
 
@@ -33,19 +33,19 @@ class App extends Component {
           <Navigation />
             <Switch>
              <Route path="/" component={Start} exact/>
-             <Route path="/register" component={Register} exact/>
+             <Route path="/register" component={Register} />
              <Route path="/login" component={Login} exact/>
-             <Route path="/manager_register" component={Register} exact/>
-             <Route path="/login_manager" component={Login} exact/>
+             <Route path="/manager_register" component={Register} />
+             <Route path="/login_manager" component={Login} />
 
              <Route path="/prosumer" component={ProsumerPage} exact/>
-             <Route path="/prosumer_options" component={ProsumerOptions} exact/>
-             <Route path="/prosumer_user" component={ProsumerUser} exact/>
+             <Route path="/prosumer_options" component={ProsumerOptions} />
+             <Route path="/prosumer_user" component={ProsumerUser} />
 
              <Route path="/manager" component={ManagerOverview} exact/>
-             <Route path="/manager_users" component={ManagerUsers} exact />
+             <Route path="/manager_users" component={ManagerUsers}  />
              <Route exact path="/logoff">
-               <Redirect to="/"/>
+               <Redirect render={Start}/>
              </Route>
            </Switch>
         </div> 

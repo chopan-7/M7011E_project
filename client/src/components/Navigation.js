@@ -3,13 +3,13 @@ import React from 'react';
 import { NavLink} from 'react-router-dom';
 import { store } from 'react-notifications-component'
 import getFromCookie from './tokenHandler'
-import Cookies from 'universal-cookie'
+import {cookies, clearJobsFromCookie} from './cookieHandler'
 
-const currentPage = window.location.href.split('/') // current URL for displaying nav-bar
-const endPoint = currentPage[currentPage.length - 1].split('_')[0]
+var currentPage = window.location.href.split('/') // current URL for displaying nav-bar
+var endPoint = currentPage[currentPage.length - 1].split('_')[0]
 const axios = require('axios')
 
-const cookies = new Cookies()
+
  
 const Navigation = () => {
    if(endPoint === 'prosumer'){
@@ -19,6 +19,7 @@ const Navigation = () => {
             <NavLink to="/prosumer_options" style={{ marginRight: 10 }}>Prosumer options</NavLink>
             <NavLink to="/prosumer_user" style={{ marginRight: 10 }}>User settings</NavLink>
             <NavLink to="/logoff" onClick={logoff} style={{ marginRight: 10 }}>Logout</NavLink>
+            {endPoint}
          </div>
       );
    } else if ( endPoint === 'manager') {
@@ -27,6 +28,7 @@ const Navigation = () => {
             <NavLink to="/manager" style={{ marginRight: 10 }}>Overview</NavLink>
             <NavLink to="/manager_users" style={{ marginRight: 10 }}>User settings</NavLink>
             <NavLink to="/logoff" onClick={logoff} style={{ marginRight: 10 }}>Logout</NavLink>
+            {endPoint}
          </div>
       );
    } else {
@@ -35,6 +37,7 @@ const Navigation = () => {
             <NavLink to="/" style={{ marginRight: 10 }}>Home</NavLink>
             <NavLink to="/register" style={{ marginRight: 10 }}>Register</NavLink>
             <NavLink to="/login" style={{ marginRight: 10 }}>Login</NavLink>
+            {endPoint}
          </div>
       );
    }
@@ -42,6 +45,11 @@ const Navigation = () => {
 }
 
 const logoff = () => {
+   // stop all intervals
+   clearJobsFromCookie()
+   
+   // window.clearInterval(updateOverview)
+
    // sign off user
    const getToken = getFromCookie('accessToken')
    axios({

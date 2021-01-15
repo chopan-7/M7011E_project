@@ -62,9 +62,9 @@ class Manager {
 
     isAuthenticated(id){
         return new Promise((resolve, reject) => {
-            var checkUser = this.users.getWhere("id, online", "id="+id)
+            var checkUser = this.users.getWhere("id, role", "id="+id)
             checkUser.then((user) => {
-                if(user[0].online == 1) {
+                if(user[0].role == AppSettings.database.roles.indexOf('manager')) {
                     resolve(true)
                 } else {
                     resolve(false)
@@ -154,10 +154,20 @@ class Manager {
 
     /* ------------------------------- API FUNCTIONS START ------------------------------ */
     /* The following functions are for Manager front-end client */
-    getData(){
+    getData(id){
         // refresh currentMarketDemand
         this.currentMarketDemand()
-        return this.data
+        // return this.data
+        return new Promise((resolve, reject) => {
+            this.isAuthenticated(id).then((auth) =>{
+                if(auth){
+                    resolve(this.data)
+                }else{
+                    reject("No access to data")
+                }
+                
+            })
+        })
     }
 
     getManagerInfo(id){
@@ -172,7 +182,14 @@ class Manager {
                     "role": AppSettings.database.roles[user[0].role],
                     "state": state
                 }
-                resolve(userResult)
+                this.isAuthenticated(id).then((auth) => {
+                    if(auth){
+                        resolve(userResult)
+                    } else {
+                        reject("No access to data")
+                    }
+                })
+                // resolve(userResult)
             })
         })
     }
@@ -197,6 +214,10 @@ class Manager {
                 resolve(res)
             })
         })
+    }
+
+    getCurrentPrice(){
+        return this.data.currentPrice
     }
 
     setCurrentPrice(id, price) {
