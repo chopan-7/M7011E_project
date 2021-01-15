@@ -9,3 +9,5 @@ Peder Johansson, pedjoh-7@student.ltu.se
   - **npm install**
   - **node dbinit**
   - **node dataManager**
+- To start the frontend and backend server
+  **npm run dev**
