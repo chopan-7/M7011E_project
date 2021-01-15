@@ -84,10 +84,11 @@ class LoginForm extends React.Component {
     }
 
     render(){
+        const userRole = (window.location.href === 'http://localhost:3000/login_manager')?'manager':'prosumer'
         return (
             <div className="LoginForm">
                 <h1>
-                    Login page
+                    Login page for {userRole}
                 </h1>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group size="lg" controlId="email">

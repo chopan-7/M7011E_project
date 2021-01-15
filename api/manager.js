@@ -16,8 +16,6 @@ var managerSchema = buildSchema(`
         currentPrice: Float!
         marketDemand: Float!
         prosumerOutage: Int!
-
-        
     }
 
     type ManagerInfo {
@@ -60,6 +58,13 @@ var managerSchema = buildSchema(`
         refress: String
     }
 
+    input RegisterUserData {
+        name: String!
+        email: String!
+        password: String!
+        picture: String
+    }
+
     type Mutation {
         startProduction(id: Int!, input: inputTokens): StatusMsg!
         authenticate(email: String!, password: String!): AuthMsg!
@@ -68,6 +73,9 @@ var managerSchema = buildSchema(`
         setBufferRatio(id: Int!, ratio: Float!, input: inputTokens): StatusMsg!
         addToMarket(id: Int!, amount: Float!, input: inputTokens): Boolean!
         drainMarket(id: Int!, amount: Float!, input: inputTokens): MarketMsg
+        blockUser(id: Int!, time: Int!, input: inputTokens): StatusMsg!
+        deleteUser(id: Int!, input: inputTokens): StatusMsg!
+        registerManager(input: RegisterUserData): Boolean!
     }
     `);
 
@@ -134,6 +142,21 @@ var managerRoot = {
         if(getToken.verified && args.id === getToken.data.id) {
             return manager.drainMarket(args.id, args.amount)
         }
+    },
+    blockUser: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.managerBlockUser(args.id, args.time)
+        }
+    },
+    deleteUser: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.managerDeleteUser(args.id, getToken.data.id)
+        }
+    },
+    registerManager: (args) => {
+        return manager.registerManager(args)
     }
   }
 

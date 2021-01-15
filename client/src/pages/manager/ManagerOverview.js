@@ -1,12 +1,14 @@
 import React from 'react'
-import Overview from '../../components/manager/overview'
+// import Overview from '../../components/manager/overview'
 import Controller from '../../components/manager/controller'
+import Navigation from '../../components/Navigation'
 
 class ManagerOverview extends React.Component {
   render() {
     return(
       <div className="ManagerOverview">
-      <Controller />
+        <Navigation type="manager" />
+        <Controller />
     </div>
     )
   }

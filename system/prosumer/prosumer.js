@@ -360,7 +360,7 @@ class Prosumer {
                 input.name,
                 input.email,
                 input.password,
-                "default-user.jpg",
+                input.picture,
                 AppSettings.database.roles.indexOf("prosumer"),
                 "Luleå",
                 0

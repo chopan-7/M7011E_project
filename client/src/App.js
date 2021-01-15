@@ -5,7 +5,6 @@ import './App.css'
 import Start from './pages/Start';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import Navigation from './components/Navigation';
 
 
 // Manager components
@@ -21,16 +20,12 @@ import ProsumerUser from './pages/prosumer/ProsumerUser';
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      isAuthenticated: false
-    }
   }
 
   render() {
     return (      
        <BrowserRouter>
         <div>
-          <Navigation />
             <Switch>
              <Route path="/" component={Start} exact/>
              <Route path="/register" component={Register} />
