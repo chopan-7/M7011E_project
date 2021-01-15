@@ -1,7 +1,7 @@
 //import ProsumerOverview from "../../components/prosumer/ProsumerOverview";
 import ProsumerOverview from "../../components/prosumer/ProsumerOverview";
 import ProsumerControll from "../../components/prosumer/ProsumerControll";
-
+import "./Prosumer.css"
 
 
 

@@ -3,9 +3,32 @@ import useRegister from "./useRegister"
 import validate from "./validateRegistration"
 import "./Register.css"
 import Button from 'react-bootstrap/Button'
+
 const RegisterSignup = ({submitRegistration}) => {
     const {controlChange, values, handleSubmit, errors} = useRegister(submitRegistration, validate);
-    
+    const uploadPicture = async e =>{
+        const file = e.target.files[0]
+        const base64 = await convertBase64(file)
+        
+        values.picture = base64
+
+    }
+
+    const convertBase64 = (file) => {
+        return new Promise((resolve, reject) =>{
+            const readFile = new FileReader()
+            readFile.readAsDataURL(file)
+
+            readFile.onload = () => {
+                resolve(readFile.result)
+            }
+
+            readFile.onerror = (error) => {
+                reject(error)
+            }
+
+        })
+    }
     return (
         <div className = "form-how">
             <form className="form" onSubmit={handleSubmit}>
@@ -71,6 +94,36 @@ const RegisterSignup = ({submitRegistration}) => {
                             onChange={controlChange}
                     />
                     {errors.passwordc && <p>{errors.passwordc}</p>}   
+                </div>
+                <div className="form-group">
+                    <label htmlFor="key"
+                    className="form-label">
+                    Confirm received key 
+                    </label>
+                    <input
+                            type="password"
+                            name="key"
+                            className="form-control"
+                            placeholder="Write given key"
+                            value={values.key}
+                            onChange={controlChange}
+                    />
+                    {errors.key && <p>{errors.key}</p>}   
+                </div>
+                <div className="form-group">
+                    <label htmlFor="picture"
+                    className="form-label">
+                    Picture upload 
+                    </label>
+                    <input
+                            type="file"
+                            name="file"
+                            className="form-control"
+                            placeholder="picture"
+                            accept="image/*"
+                            onChange={uploadPicture}
+                    />
+                    {errors.picture && <p>{errors.picture}</p>}  
                 </div>
                 <Button className = "form-input-button"
                     block size="lg"

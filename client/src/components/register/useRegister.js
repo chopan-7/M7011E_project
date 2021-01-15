@@ -12,8 +12,11 @@ const useRegister = (callback, validate) =>{
         email:'',
         password:'',
         passwordc:'',
+        key:'',
+        picture:'',
         role: role
     })
+    
 
     const [errors, setErrors] = useState({})
     const [submitting, setSubmitting] = useState(false)
@@ -23,7 +26,9 @@ const useRegister = (callback, validate) =>{
         setValues({
             ...values,
             [name]: value
-        })
+        }) 
+        alert(values.picture)
+        
     }
 
     /*
