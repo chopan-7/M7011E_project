@@ -47,11 +47,11 @@ const ProsumerOverview = () =>{
             
             const data = response.data.data.prosumerData 
                         
-            setProduction(data.production)
-            setConsumption(data.consumption)
-            setBuffer(data.buffer)
-            setWind(data.wind)
-            setNetProduction(data.production-data.consumption)
+            setProduction(data.production.toFixed(2))
+            setConsumption(data.consumption.toFixed(2))
+            setBuffer(data.buffer.toFixed(2))
+            setWind(data.wind.toFixed(2))
+            setNetProduction((data.production-data.consumption).toFixed(2))
                      
         })
 
@@ -67,11 +67,8 @@ const ProsumerOverview = () =>{
             }
         })
         .then((response2) => {
-
-            const data2 = response2.data.data.getCurrentPrice 
-            setCurrentPrice(data2)
-            
-
+            const data2 = response2.data.data.managerData 
+            setCurrentPrice(data2.currentPrice.toFixed(2))
         })
 
         axios({
@@ -100,12 +97,12 @@ const ProsumerOverview = () =>{
     return (
         <div>
           <p>Current state: {state} </p> 
-          <p>Current wind: {wind} </p>
-          <p>Current production: {production} </p> 
-          <p>Current consumtion: {consumption} </p>
-          <p>Current net production: {net_production} </p> 
-          <p>Current buffer: {buffer} </p> 
-          <p>Current market price: {currentPrice} </p> 
+          <p>Current wind: {wind} m/s </p>
+          <p>Current production: {production} kwh </p> 
+          <p>Current consumtion: {consumption} kwh </p>
+          <p>Current net production: {net_production} kwh </p> 
+          <p>Current buffer: {buffer} kwh </p> 
+          <p>Current market price: {currentPrice} kr </p> 
           
         </div>
     )

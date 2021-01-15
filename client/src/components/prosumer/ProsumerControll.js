@@ -57,10 +57,10 @@ const ProsumerControll = () =>{
             const data = response.data.data.prosumerData 
             
             setValues({
-                buy_ratio: data.buy_ratio, 
-                sell_ratio: data.sell_ratio,
-                new_buy_ratio: data.buy_ratio,
-                new_sell_ratio: data.sell_ratio
+                buy_ratio: data.buy_ratio.toFixed(2), 
+                sell_ratio: data.sell_ratio.toFixed(2),
+                new_buy_ratio: (data.buy_ratio*100),
+                new_sell_ratio: (data.sell_ratio*100)
             })
             
             // setBuyratio(data.buy_ratio)
@@ -80,8 +80,8 @@ const ProsumerControll = () =>{
                 
                 query: `mutation {
                     setBufferRatio(id: ${tokendata.userid}, input: {
-                      buy: ${values.new_buy_ratio}
-                      sell: ${values.new_sell_ratio}
+                      buy: ${(values.new_buy_ratio)/100}
+                      sell: ${(values.new_sell_ratio)/100}
                       token: "${getToken}"
                     }) {
                       status
@@ -93,7 +93,7 @@ const ProsumerControll = () =>{
         })
         .then((response) => {
             const data = response.data.data.setBufferRatio
-            alert(data.status)
+            
         })
         getRatios()
         // setSubmitting(true);
@@ -103,8 +103,8 @@ const ProsumerControll = () =>{
     return (
         <div>
             
-            <p> Current buy ratio: {values.buy_ratio} </p>
-            <p> Current sell ratio: {values.sell_ratio} </p>
+            <p> Current buy ratio: {(values.buy_ratio)*100+"%"} </p>
+            <p> Current sell ratio: {(values.sell_ratio)*100+"%"} </p>
             <form className="buffers" onSubmit={bufferSubmit}>
                 <div>                
                     <label>
@@ -113,12 +113,15 @@ const ProsumerControll = () =>{
                     <input                    
                         type = "number"                
                         min = "0"
-                        max = "1"
-                        step = "0.01"
+                        max = "100"
+                        step = "1"
                         value = {values.new_buy_ratio}
                         name="new_buy_ratio"
                         onChange={ChangeRatio}
                     />
+                    <label>
+                    %
+                    </label>
 
                 </div>
 
@@ -129,12 +132,15 @@ const ProsumerControll = () =>{
                     <input
                         type = "number"                
                         min = "0"
-                        max = "1"
-                        step = "0.01"
+                        max = "100"
+                        step = "1"
                         value = {values.new_sell_ratio}
                         name="new_sell_ratio"
                         onChange={ChangeRatio}
-                    />        
+                    />
+                    <label>
+                    %
+                    </label>        
                 </div>
                 <button type = "submit">
                     Save
