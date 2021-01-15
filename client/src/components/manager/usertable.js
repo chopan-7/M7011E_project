@@ -1,6 +1,6 @@
 // Overview page
 import React from 'react'
-import {Button, Badge} from 'react-bootstrap'
+import {Container, Card, Button, Badge} from 'react-bootstrap'
 import getFromCookie from '../tokenHandler'
 import { store } from 'react-notifications-component';
 import UserModal from './userModal'
@@ -127,23 +127,29 @@ class UserTable extends React.Component {
 
   render() {
     return (
-      <div className="ManagerPage">
-      <h1>User list</h1>
-      <Table striped bordered hover size={'sm'}>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>State</th>
-            <th>Online</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        {this.renderUserList()}
-      </Table>
-      </div>
+      <>
+      <Container fluid>
+      <Card id={'userList'}>
+      <Card.Header>Users</Card.Header>
+        <Card.Body>
+          <Table striped bordered hover size={'sm'}>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>State</th>
+                <th>Online</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            {this.renderUserList()}
+          </Table>
+        </Card.Body>
+      </Card>
+      </Container>
+      </>
     );
   }
 }

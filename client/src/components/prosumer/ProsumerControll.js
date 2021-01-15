@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 import axios from "axios"
 import Cookies from 'universal-cookie'
+import { Card, Container, Button } from 'react-bootstrap'
 
 const cookies = new Cookies()
 const jwt = require("jsonwebtoken")
@@ -91,62 +92,62 @@ const ProsumerControll = () =>{
             } 
 
         })
-        .then((response) => {
-            const data = response.data.data.setBufferRatio
-            
-        })
         getRatios()
         // setSubmitting(true);
         
     }
 
     return (
-        <div>
-            
-            <p> Current buy ratio: {(values.buy_ratio)*100+"%"} </p>
-            <p> Current sell ratio: {(values.sell_ratio)*100+"%"} </p>
-            <form className="buffers" onSubmit={bufferSubmit}>
-                <div>                
-                    <label>
-                    Change buy ratio to: 
-                    </label>
-                    <input                    
-                        type = "number"                
-                        min = "0"
-                        max = "100"
-                        step = "1"
-                        value = {values.new_buy_ratio}
-                        name="new_buy_ratio"
-                        onChange={ChangeRatio}
-                    />
-                    <label>
-                    %
-                    </label>
+        <>
+        <Container fluid>
+            <Card>
+                <Card.Header>Prosumer controll</Card.Header>
+                <Card.Body>
+                    <p> Current buy ratio: {(values.buy_ratio)*100+"%"} </p>
+                    <p> Current sell ratio: {(values.sell_ratio)*100+"%"} </p>
+                    <form className="buffers" onSubmit={bufferSubmit}>
+                        <div>                
+                            <label>
+                            Change buy ratio to: 
+                            </label>
+                            <input                    
+                                type = "number"                
+                                min = "0"
+                                max = "100"
+                                step = "1"
+                                value = {values.new_buy_ratio}
+                                name="new_buy_ratio"
+                                onChange={ChangeRatio}
+                            />
+                            <label>
+                            %
+                            </label>
 
-                </div>
+                        </div>
 
-                <div>                
-                    <label>
-                    Change sell ratio to:
-                    </label>
-                    <input
-                        type = "number"                
-                        min = "0"
-                        max = "100"
-                        step = "1"
-                        value = {values.new_sell_ratio}
-                        name="new_sell_ratio"
-                        onChange={ChangeRatio}
-                    />
-                    <label>
-                    %
-                    </label>        
-                </div>
-                <button type = "submit">
-                    Save
-                </button>
-            </form>
-        </div>
+                        <div>                
+                            <label>
+                            Change sell ratio to:
+                            </label>
+                            <input
+                                type = "number"                
+                                min = "0"
+                                max = "100"
+                                step = "1"
+                                value = {values.new_sell_ratio}
+                                name="new_sell_ratio"
+                                onChange={ChangeRatio}
+                            />
+                            <label>
+                            %
+                            </label>        
+                        </div>
+                        <Button type = "submit" variant={'primary'} size={'sm'}>Save</Button>
+                    </form>
+                </Card.Body>
+            </Card>
+        </Container>
+        </>
         
     )
 

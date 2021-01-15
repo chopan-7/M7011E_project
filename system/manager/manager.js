@@ -184,7 +184,8 @@ class Manager {
                     "name": user[0].name,
                     "email": user[0].email,
                     "role": AppSettings.database.roles[user[0].role],
-                    "state": state
+                    "state": state,
+                    "picture": user[0].picture
                 }
                 this.isAuthenticated(id).then((auth) => {
                     if(auth){
@@ -307,6 +308,12 @@ class Manager {
                 "Luleå",
                 0
             )
+        }).then((res) => {
+            if(res){
+                resolve(true)
+            } else {
+                resolve(false)
+            }
         })
     }
 

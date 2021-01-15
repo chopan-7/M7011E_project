@@ -25,6 +25,7 @@ var prosumerSchema = buildSchema(`
         role: String!
         state: String!
         online: Boolean!
+        picture: String!
     }
 
     type StatusMsg {
@@ -77,6 +78,7 @@ var prosumerSchema = buildSchema(`
         register(input: RegisterUserData): Boolean!
         authenticate(email: String!, password: String!): AuthMsg
         setBufferRatio(id: Int!, input: BufferRatio): StatusMsg
+        updatePicture(picture: String!, input: inputTokens): Boolean!
         signOut(input: inputTokens): AuthMsg
     }
     `);
@@ -122,6 +124,13 @@ var prosumerRoot = {
         const getToken = verifyToken(args.input.token)
         if(getToken.verified && args.id === getToken.data.id) {
             return prosumer.setBufferRatio(args.id, args.input)
+        }
+    },
+    updatePicture: (args) => {
+        const getToken = verifyToken(args.input.access)
+        console.log(getToken)
+        if(getToken.verified) {
+            return prosumer.updatePicture(getToken.data.id, args.picture)
         }
     }
   }

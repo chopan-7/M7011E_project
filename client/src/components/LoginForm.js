@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button'
 import Cookies from 'universal-cookie'
 import Alert from 'react-bootstrap/Alert'
 
-import { withRouter} from 'react-router-dom'
+import { withRouter, NavLink} from 'react-router-dom'
 
 const cookies = new Cookies()
 const axios = require('axios')
@@ -104,6 +104,7 @@ class LoginForm extends React.Component {
                     </Alert>
                     <Button block size="lg" type="submit" disabled={!this.validateForm()}>Login</Button>
                 </Form>
+                <NavLink to={userRole==='manager'?'/manager_register':'/register'}>Don't have an account? Sign up here!</NavLink>
             </div>
         )
     }

@@ -5,6 +5,7 @@ import "./Register.css"
 import Button from 'react-bootstrap/Button'
 
 const RegisterSignup = ({submitRegistration}) => {
+    const userRole = (window.location.href === 'http://localhost:3000/manager_register')?'manager':'prosumer'
     const {controlChange, values, handleSubmit, errors} = useRegister(submitRegistration, validate);
     const uploadPicture = async e =>{
         const file = e.target.files[0]
@@ -33,7 +34,7 @@ const RegisterSignup = ({submitRegistration}) => {
         <div className = "form-how">
             <form className="form" onSubmit={handleSubmit}>
                 <h1>
-                    Registration page
+                    Registration page for {userRole}
                 </h1>
                 <div className="form-group">
                     <label htmlFor="name"

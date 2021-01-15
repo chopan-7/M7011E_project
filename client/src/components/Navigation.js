@@ -1,6 +1,5 @@
 import React from 'react';
- 
-import { NavLink} from 'react-router-dom';
+import {Navbar, Nav} from 'react-bootstrap' 
 import { store } from 'react-notifications-component'
 import getFromCookie from './tokenHandler'
 import {cookies, clearJobsFromCookie} from './cookieHandler'
@@ -10,33 +9,35 @@ const axios = require('axios')
 const Navigation = (props) => {
    // Navbars for different states
    if(props.type === 'prosumer'){
-      return (
-         <div>
-            <NavLink to="/prosumer" style={{ marginRight: 10 }}>Overview</NavLink>
-            <NavLink to="/prosumer_options" style={{ marginRight: 10 }}>Prosumer options</NavLink>
-            <NavLink to="/prosumer_user" style={{ marginRight: 10 }}>User settings</NavLink>
-            <NavLink to="/logoff" onClick={() => logoff(props.type)} style={{ marginRight: 10 }}>Logout</NavLink>
-         </div>
-      );
+      return(
+         <Navbar bg="light" expand="lg">
+            <Navbar.Brand href="/prosumer">Greenlight simulator</Navbar.Brand>
+            <Nav.Link href="/prosumer" style={{ marginRight: 10 }}>Overview</Nav.Link>
+            <Nav.Link href="/prosumer_user" style={{ marginRight: 10 }}>User settings</Nav.Link>
+            <Nav.Link href="/logoff" onClick={() => logoff(props.type)} style={{ marginRight: 10 }}>Logout</Nav.Link>
+         </Navbar>
+      )
    } else if ( props.type === 'manager') {
-      return (
-         <div>
-            <NavLink to="/manager" style={{ marginRight: 10 }}>Overview</NavLink>
-            <NavLink to="/manager_users" style={{ marginRight: 10 }}>User settings</NavLink>
-            <NavLink to="/logoff" onClick={() => logoff(props.type)} style={{ marginRight: 10 }}>Logout</NavLink>
-         </div>
-      );
+      return(
+         <Navbar bg="light" expand="lg">
+            <Navbar.Brand href="/manager">Greenlight simulator</Navbar.Brand>
+            <Nav.Link href="/manager" style={{ marginRight: 10 }}>Overview</Nav.Link>
+            <Nav.Link href="/manager_users" style={{ marginRight: 10 }}>User settings</Nav.Link>
+            <Nav.Link href="/logoff" onClick={() => logoff(props.type)} style={{ marginRight: 10 }}>Logout</Nav.Link>
+         </Navbar>
+      )
    } else {
-      return (
-         <div>
-            <NavLink to="/" style={{ marginRight: 10 }}>Home</NavLink>
-            <NavLink to="/register" style={{ marginRight: 10 }}>Register</NavLink>
-            <NavLink to="/login" style={{ marginRight: 10 }}>Prosumer</NavLink>
-            <NavLink to="/login_manager" style={{ marginRight: 10 }}>Manager</NavLink>
-         </div>
-      );
+      return(
+         <Navbar bg="light" expand="lg">
+            <Navbar.Brand href="/">Greenlight simulator</Navbar.Brand>
+            <Nav.Link href="/" style={{ marginRight: 10 }}>Home</Nav.Link>
+            <Nav.Link href="/register" style={{ marginRight: 10 }}>Register</Nav.Link>
+            {/* <Nav.Link href="/manager_register" style={{ marginRight: 10 }}>Register manager</Nav.Link> */}
+            <Nav.Link href="/login" style={{ marginRight: 10 }}>Prosumer</Nav.Link>
+            <Nav.Link href="/login_manager" style={{ marginRight: 10 }}>Manager</Nav.Link>
+         </Navbar>
+      )
    }
-
 }
 
 // Sign out function

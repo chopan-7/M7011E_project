@@ -1,6 +1,6 @@
 import React from 'react'
-// import Overview from '../../components/manager/overview'
 import Controller from '../../components/manager/controller'
+import ManagerInfo from '../../components/manager/managerInfo'
 import Navigation from '../../components/Navigation'
 
 class ManagerOverview extends React.Component {
@@ -9,6 +9,7 @@ class ManagerOverview extends React.Component {
       <div className="ManagerOverview">
         <Navigation type="manager" />
         <Controller />
+        <ManagerInfo />
     </div>
     )
   }

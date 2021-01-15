@@ -6,26 +6,20 @@ cookies.set('jobList', [])
 
 export const addJobToCookie = (jobID) => {
     // fetch current cookie
-    var jobList = new Array()
+    var jobList = []
     var jobCookie
     const getCookie = async () => {
-         jobCookie = await cookies.get()
+         jobCookie = await cookies.get('jobList')
          jobCookie.forEach(job => {
             jobList.push(job)
         })
         jobList.push(jobID)
         cookies.set('jobList', [jobList])
     } 
-    // var jobCookie = cookies.get('jobList')
-    // jobCookie.forEach(job => {
-    //     jobList.push(job)
-    // })
-    // jobList.push(jobID)
-    // cookies.set('jobList', [jobList])
+    getCookie()
 }
 
 export const clearJobsFromCookie = () => {
-    var jobList = new Array()
     var jobCookie = cookies.get('jobList')
     jobCookie.forEach(job => {
         window.clearInterval(job)

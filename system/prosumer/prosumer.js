@@ -345,10 +345,23 @@ class Prosumer {
                         "name": user[0].name,
                         "email": user[0].email,
                         "role": AppSettings.database.roles[user[0].role],
-                        "state": state
+                        "state": state,
+                        "picture": user[0].picture
                     }
                     resolve(userResult)
                 })
+            })
+        })
+    }
+
+    updatePicture(id, picture) {
+        return new Promise((resolve, reject) => {
+            this.users.updatePicture(id, picture).then((res) => {
+                if(res) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
             })
         })
     }

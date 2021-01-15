@@ -1,6 +1,6 @@
 import React from 'react'
 import Navigation from '../../components/Navigation'
-import UserTable from '../../components/manager/userTable'
+import UserTable from '../../components/manager/usertable'
 
 class ManagerUsers extends React.Component{
     
@@ -8,7 +8,6 @@ class ManagerUsers extends React.Component{
         return(
             <div className="Manager">
                 <Navigation type="manager" />
-                <h1>Manager User Settings</h1>
                 <UserTable/>
             </div>
         )

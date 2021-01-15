@@ -1,11 +1,10 @@
 import {useState, useEffect} from 'react'
 import axios from "axios"
-import Cookies from 'universal-cookie'
 import {addJobToCookie} from '../cookieHandler'
 
 import getFromCookie from '../tokenHandler'
+import { Card, Container } from 'react-bootstrap'
 
-const cookies = new Cookies()
 
 const ProsumerOverview = () =>{
 
@@ -95,16 +94,22 @@ const ProsumerOverview = () =>{
    
     
     return (
-        <div>
-          <p>Current state: {state} </p> 
-          <p>Current wind: {wind} m/s </p>
-          <p>Current production: {production} kwh </p> 
-          <p>Current consumtion: {consumption} kwh </p>
-          <p>Current net production: {net_production} kwh </p> 
-          <p>Current buffer: {buffer} kwh </p> 
-          <p>Current market price: {currentPrice} kr </p> 
-          
-        </div>
+        <>
+        <Container fluid>
+            <Card>
+                <Card.Header>Prosumer overview</Card.Header>
+                <Card.Body>
+                    <p>Current state: {state} </p> 
+                    <p>Current wind: {wind} m/s </p>
+                    <p>Current production: {production} kwh </p> 
+                    <p>Current consumtion: {consumption} kwh </p>
+                    <p>Current net production: {net_production} kwh </p> 
+                    <p>Current buffer: {buffer} kwh </p> 
+                    <p>Current market price: {currentPrice} kr </p> 
+                </Card.Body>
+            </Card>
+        </Container>
+        </>
     )
 }
 

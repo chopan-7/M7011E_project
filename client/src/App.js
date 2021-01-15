@@ -12,15 +12,11 @@ import ManagerOverview from './pages/manager/ManagerOverview';
 import ManagerUsers from './pages/manager/ManagerUsers'
 
 import ProsumerPage from './pages/prosumer/ProsumerPage';
-import ProsumerOptions from './pages/prosumer/ProsumerOptions';
 import ProsumerUser from './pages/prosumer/ProsumerUser';
 
  
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-  }
 
   render() {
     return (      
@@ -34,7 +30,6 @@ class App extends Component {
              <Route path="/login_manager" component={Login} />
 
              <Route path="/prosumer" component={ProsumerPage} exact/>
-             <Route path="/prosumer_options" component={ProsumerOptions} />
              <Route path="/prosumer_user" component={ProsumerUser} />
 
              <Route path="/manager" component={ManagerOverview} exact/>

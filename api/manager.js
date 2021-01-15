@@ -24,6 +24,7 @@ var managerSchema = buildSchema(`
         email: String!
         role: String!
         state: String!
+        picture: String
     }
 
     type MarketMsg {
@@ -75,7 +76,7 @@ var managerSchema = buildSchema(`
         drainMarket(id: Int!, amount: Float!, input: inputTokens): MarketMsg
         blockUser(id: Int!, time: Int!, input: inputTokens): StatusMsg!
         deleteUser(id: Int!, input: inputTokens): StatusMsg!
-        registerManager(input: RegisterUserData): Boolean!
+        register(input: RegisterUserData): Boolean!
     }
     `);
 
@@ -155,7 +156,7 @@ var managerRoot = {
             return manager.managerDeleteUser(args.id, getToken.data.id)
         }
     },
-    registerManager: (args) => {
+    register: (args) => {
         return manager.registerManager(args)
     }
   }

@@ -1,6 +1,7 @@
 import React from 'react'
 import getFromCookie from '../../components/tokenHandler'
 import {addJobToCookie} from '../cookieHandler'
+import {Card} from 'react-bootstrap'
 
 const axios = require('axios')
 
@@ -8,7 +9,6 @@ class Overview extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            // plantState: '',
             currentProduction: '',
             marketDemand: '',
             prosumerOutage: '',
@@ -44,7 +44,6 @@ class Overview extends React.Component {
         .then((response) => {
             const data = response.data.data.managerData
             this.setState({
-                // plantState: data.state,
                 currentProduction: data.currentProduction,
                 marketDemand: data.marketDemand,
                 prosumerOutage: data.prosumerOutage,
@@ -56,18 +55,21 @@ class Overview extends React.Component {
 
     render() {
         return (
-          <div className="ManagerOverview">
-            <div className="Overview">
-              <h3>Overview</h3>
-              <p>Coal plant state: {this.props.plantState}</p>
-              <p>Current production to market: {this.state.currentProduction}</p>
-              <p>Market demand: {this.state.marketDemand}</p>
-              <p>Prosumer outage: {this.state.prosumerOutage}</p>
-              <p>Current marketprice: {this.state.currentMarketPrice}</p>
-              {/* <p>Current marketprice: {this.props.currentPrice}</p> */}
-              <p>Buffer: {this.state.buffer}</p>
-            </div>
-          </div>
+          <>
+          <Card id={'overview'}>
+              <Card.Header>Coal plant overview</Card.Header>
+              <Card.Body>
+                <Card.Text>
+                    <p>State: {this.props.plantState}</p>
+                    <p>Current production to market: {this.state.currentProduction}</p>
+                    <p>Market demand: {this.state.marketDemand}</p>
+                    <p>Prosumer outage: {this.state.prosumerOutage}</p>
+                    <p>Current marketprice: {this.state.currentMarketPrice}</p>
+                    <p>Buffer: {this.state.buffer}</p>
+                </Card.Text>
+              </Card.Body>
+          </Card>
+          </>
         );
       }
 }

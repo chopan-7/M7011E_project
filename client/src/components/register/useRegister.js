@@ -5,7 +5,7 @@ const useRegister = (callback, validate) =>{
     // check the role of the user
     const currentUrl = window.location.href.split('/')
     const endPoint = currentUrl[currentUrl.length -1].split('_')[0]
-    const role = endPoint != 'manager'?'prosumer':endPoint
+    const role = endPoint !== 'manager'?'prosumer':endPoint
 
     const [values, setValues] = useState({
         name:'',
@@ -27,16 +27,10 @@ const useRegister = (callback, validate) =>{
             ...values,
             [name]: value
         }) 
-        alert(values.picture)
         
     }
 
-    /*
-    TODO:
-        - Check if user register is prosumer or manager
-        - Send data to API register
-        - Upload picture if user is manager (required)
-    */
+
     const handleSubmit = e => {
         setErrors(validate(values));
         axios({
@@ -48,6 +42,7 @@ const useRegister = (callback, validate) =>{
                       name: "${values.name}"
                       email: "${values.email}"
                       password: "${values.password}"
+                      picture: "${values.picture}"
                     })
                   }`
             }

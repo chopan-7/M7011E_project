@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
 import getFromCookie from '../tokenHandler'
+import {Container, Card, Col, Row} from 'react-bootstrap'
 
 import Overview from './overview'
 
@@ -194,32 +195,40 @@ class Controller extends React.Component {
 
     render() {
         return(
-            <div className={Controller}>
-                <Overview plantState={this.state.production_stateText} currentPrice={this.state.marketPrice}/>
-                <h3>Controller</h3>
-                <div class="controll_panel">
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Row>
-                        <Form.Group as={Form.Col} controlID="formGridBuffer_ratio">
-                        <Form.Label>Buffer ratio %: </Form.Label>
-                            <Form.Control type="percent" name="buffer_ratio" size="sm" value={this.state.buffer_ratio} onChange={this.handleChange}/>
-                            <Form.Control type="range" name="buffer_ratio" size="sm" min="0" max="100" value={this.state.buffer_ratio} step="0.01" onChange={this.handleChange}/>
-                        </Form.Group>
-                        <Form.Group as={Form.Col} controlId="marketPrice">
-                            <Form.Label>Set marketprice:</Form.Label>
-                            <Form.Control type="text" name="marketPrice" size="sm" value={this.state.marketPrice} onChange={this.handleChange}/>
-                    </Form.Group>
-                    </Form.Row>
-                    <Form.Row>
-                        <Button variant="primary" type="submit">Save settings</Button>
-                    </Form.Row>
-                    <Alert variant={this.state.alert} show={this.state.alertShow} onClick={() => this.setState({alertShow: false})}>
-                        {this.state.alertMessage}
-                    </Alert>
-                </Form>
-                <Button variant={this.state.production_state === 0?'success':'danger'} onClick={() => this.handleStartStop()}>{this.state.production_state === 0?'Start production':'Stop production'}</Button>
-                </div>
-            </div>
+            <Container fluid>
+                <Row className="justify-content-md-center">
+                    <Col>
+                    <Card id={'controll'}>
+                        <Card.Header>Coal plant controll</Card.Header>
+                        <Card.Body>
+                            <Form onSubmit={this.handleSubmit}>
+                                <Form.Row>
+                                    <Form.Group as={Form.Col} controlID="formGridBuffer_ratio">
+                                    <Form.Label>Buffer ratio %: </Form.Label>
+                                        <Form.Control type="percent" name="buffer_ratio" size="sm" value={this.state.buffer_ratio} onChange={this.handleChange}/>
+                                        <Form.Control type="range" name="buffer_ratio" size="sm" min="0" max="100" value={this.state.buffer_ratio} step="0.01" onChange={this.handleChange}/>
+                                    </Form.Group>
+                                    <Form.Group as={Form.Col} controlId="marketPrice">
+                                        <Form.Label>Set marketprice:</Form.Label>
+                                        <Form.Control type="text" name="marketPrice" size="sm" value={this.state.marketPrice} onChange={this.handleChange}/>
+                                </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
+                                    <Button variant="primary" type="submit">Save settings</Button>
+                                </Form.Row>
+                                <Alert variant={this.state.alert} show={this.state.alertShow} onClick={() => this.setState({alertShow: false})}>
+                                    {this.state.alertMessage}
+                                </Alert>
+                            </Form>
+                            <Button variant={this.state.production_state === 0?'success':'danger'} onClick={() => this.handleStartStop()}>{this.state.production_state === 0?'Start production':'Stop production'}</Button>
+                        </Card.Body>
+                    </Card>
+                    </Col>
+                    <Col>
+                    <Overview plantState={this.state.production_stateText} currentPrice={this.state.marketPrice}/>   
+                    </Col>
+                </Row>
+            </Container>
         )
     }
 }

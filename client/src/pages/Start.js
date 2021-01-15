@@ -1,10 +1,16 @@
+import {Container} from 'react-bootstrap'
 import Navigation from '../components/Navigation';
 function Start() {
   return (
-    <div className="Start">
-      <Navigation type="public"/>
+    // <div className="Start">
+      
+    // </div>
+    <>
+    <Navigation type="public"/>
+    <Container fluid>
       <h1>Welcome to Green Light Simulator Start Page</h1>
-    </div>
+    </Container>
+    </>
   );
 }
 
