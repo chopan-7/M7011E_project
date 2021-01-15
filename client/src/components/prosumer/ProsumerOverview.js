@@ -1,8 +1,11 @@
 import {useState, useEffect} from 'react'
 import axios from "axios"
 import Cookies from 'universal-cookie'
+import {addJobToCookie} from '../cookieHandler'
 
 import getFromCookie from '../tokenHandler'
+
+const cookies = new Cookies()
 
 const ProsumerOverview = () =>{
 
@@ -16,7 +19,8 @@ const ProsumerOverview = () =>{
 
     useEffect(() => { // kanske asyn sen ?
         getOverview()
-        setInterval(()=>{getOverview()},10000)
+        var interval_id = window.setInterval(()=>{getOverview()},10000)   // update overview data every 10 sec
+        addJobToCookie(interval_id)
     }, [])
 
     const getOverview = () => {
@@ -56,19 +60,16 @@ const ProsumerOverview = () =>{
             url: 'http://localhost:8000/api/manager',
             data: {
                 query: `query{
-                    managerData(input:{
+                    getCurrentPrice(input:{
                         access:"${getToken.token}"
-                    }){
-                        currentPrice
-                                                                                                
-                    }
+                    })
                 }`
             }
         })
         .then((response2) => {
 
-            const data2 = response2.data.data.managerData 
-            setCurrentPrice(data2.currentPrice)
+            const data2 = response2.data.data.getCurrentPrice 
+            setCurrentPrice(data2)
             
 
         })
@@ -88,9 +89,7 @@ const ProsumerOverview = () =>{
             }
         })
         .then((response3) => {
-            alert(response3.data.data)
             const data3 = response3.data.data.getProsumerInfo 
-            
             setProductionState(data3.state)
 
         })

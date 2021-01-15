@@ -52,6 +52,7 @@ var managerSchema = buildSchema(`
     type Query {
         managerData(input: inputTokens): ManagerData
         managerInfo(id: Int!, input: inputTokens): ManagerInfo
+        getCurrentPrice(input: inputTokens): Float!
     }
 
     input inputTokens {
@@ -74,7 +75,7 @@ var managerRoot = {
     managerData: (args) => {
         const getToken = verifyToken(args.input.access)
         if(getToken.verified) {
-            return manager.getData()
+            return manager.getData(getToken.data.id)
         }
     },
     managerInfo: (args) => {
@@ -102,6 +103,12 @@ var managerRoot = {
                 message: 'Bye',
                 tokens: unsignToken(args.input.access)
             })
+        }
+    },
+    getCurrentPrice: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.getCurrentPrice()
         }
     },
     setCurrentPrice: (args) => {
