@@ -20,6 +20,10 @@ class LoginForm extends React.Component {
             alertMessage: ''
         }
 
+        this.currentUrl = window.location.href.split('/')
+        this.endPoint = this.currentUrl[this.currentUrl.length - 1]
+        this.userRole = (this.endPoint === 'login')?'prosumer':'manager'
+
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
@@ -34,8 +38,7 @@ class LoginForm extends React.Component {
 
     handleSubmit(event) {
         // Authenticate user or manager
-        const userRole = (window.location.href === 'http://localhost:3000/login_manager')?'manager':'prosumer'
-        this.loginUser(this.state.email, this.state.password, userRole).then( (res) => {
+        this.loginUser(this.state.email, this.state.password).then( (res) => {
             // set cookies
             if(res.tokens != null) {
                 cookies.set('accessToken', res.tokens.access, {path: '/'})
@@ -46,7 +49,7 @@ class LoginForm extends React.Component {
             if(res.status === false) {
                 this.setState({alert: 'danger', alertShow: true, alertMessage: 'Wrong email or password.'})
             } else {
-                if(userRole === 'manager') {
+                if(this.userRole === 'manager') {
                     this.props.history.push('/manager')    // redirect to manager page
                 } else {
                     this.props.history.push('/prosumer')    // redirect to prosumer page
@@ -59,11 +62,11 @@ class LoginForm extends React.Component {
 
     }
 
-    loginUser(email, password, userRole) {
+    loginUser(email, password) {
         return new Promise((resolve, reject) => {
             axios({
                 method: 'post',
-                url: '/api/'+userRole,
+                url: '/api/'+this.userRole,
                 data: {
                     query: `mutation {
                         authenticate(email: "${email}", password: "${password}") {
@@ -84,11 +87,10 @@ class LoginForm extends React.Component {
     }
 
     render(){
-        const userRole = (window.location.href === 'http://localhost:3000/login_manager')?'manager':'prosumer'
         return (
             <div className="LoginForm">
                 <h1>
-                    Login page for {userRole}
+                    Login page for {this.userRole}
                 </h1>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group size="lg" controlId="email">
@@ -104,7 +106,7 @@ class LoginForm extends React.Component {
                     </Alert>
                     <Button block size="lg" type="submit" disabled={!this.validateForm()}>Login</Button>
                 </Form>
-                <NavLink to={userRole==='manager'?'/manager_register':'/register'}>Don't have an account? Sign up here!</NavLink>
+                <NavLink to={this.userRole==='manager'?'/manager_register':'/register'}>Don't have an account? Sign up here!</NavLink>
             </div>
         )
     }
