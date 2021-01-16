@@ -5,7 +5,9 @@ import "./Register.css"
 import Button from 'react-bootstrap/Button'
 
 const RegisterSignup = ({submitRegistration}) => {
-    const userRole = (window.location.href === 'http://localhost:3000/manager_register')?'manager':'prosumer'
+    const currentUrl = window.location.href.split('/')
+    const endPoint = currentUrl[currentUrl.length - 1]
+    const userRole = (endPoint === 'register')?'prosumer':'manager'
     const {controlChange, values, handleSubmit, errors} = useRegister(submitRegistration, validate);
     const uploadPicture = async e =>{
         const file = e.target.files[0]
@@ -132,7 +134,7 @@ const RegisterSignup = ({submitRegistration}) => {
                     Sign up
                 </Button>
                 <span className="form-input-login">
-                    Already created an account? Login in <a href="/login">here!</a> 
+                    Already created an account? Login in <a href={userRole === 'prosumer'?'/login':'/login_manager'}>here!</a> 
                 </span>
             </form>
         </div>
