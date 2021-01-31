@@ -1,12 +1,14 @@
 import React from 'react'
 import getFromCookie from '../tokenHandler'
 import {Container, Card, Col, Row, Image} from 'react-bootstrap'
+import UserEditModal from './userEditModal'
 const axios = require('axios')
 
 class ManagerInfo extends React.Component {
     constructor(props){
         super(props)
         this.state = {
+            id: '',
             name: '',
             email: '',
             picture: ''
@@ -22,6 +24,7 @@ class ManagerInfo extends React.Component {
             data: {
                 query: `query {
                     managerInfo(id: ${getToken.data.userid}, input: {access: "${getToken.token}"}) {
+                        id
                         name
                         email
                         picture
@@ -32,6 +35,7 @@ class ManagerInfo extends React.Component {
         .then((res) => {
             const data = res.data.data.managerInfo
             this.setState({
+                id: data.id,
                 name: data.name,
                 email: data.email,
                 picture: data.picture
@@ -54,6 +58,11 @@ class ManagerInfo extends React.Component {
                                 </Col>
                                 <Col md>
                                     <Image src={this.state.picture} thumbnail/>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                <UserEditModal userid={this.state.id} type={'manager'}/>
                                 </Col>
                             </Row>
                         </Card.Text>

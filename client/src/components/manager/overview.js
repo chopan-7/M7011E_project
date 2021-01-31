@@ -13,7 +13,8 @@ class Overview extends React.Component {
             marketDemand: '',
             prosumerOutage: '',
             currentMarketPrice: '',
-            buffer: ''
+            buffer: '',
+            suggestedPrice: ''
           }
 
         this.getData()
@@ -51,6 +52,21 @@ class Overview extends React.Component {
                 buffer: data.buffer
             })
         })
+        axios({
+            method: 'POST',
+            url: '/api/simulator',
+            data: {
+                query: `query {
+                    simulate{
+                      suggestedPrice
+                    }
+                  }`
+            }
+        })
+        .then((res) => {
+            const data = res.data.data.simulate
+            this.setState({suggestedPrice: data.suggestedPrice})
+        })
     }
 
     render() {
@@ -65,6 +81,7 @@ class Overview extends React.Component {
                     <p>Market demand: {this.state.marketDemand}</p>
                     <p>Prosumer outage: {this.state.prosumerOutage}</p>
                     <p>Current marketprice: {this.state.currentMarketPrice}</p>
+                    <p>Suggested marketprice: {this.state.suggestedPrice}</p>
                     <p>Buffer: {this.state.buffer}</p>
                 </Card.Text>
               </Card.Body>

@@ -1,6 +1,7 @@
 const AppSettings = require("../../appSettings")
 const {databaseManager} = require("../data-fetcher")
 const jwt = require('jsonwebtoken')
+const cookieParser = require("cookie-parser")
 
 class Manager {
     constructor(){
@@ -231,6 +232,31 @@ class Manager {
                     .catch((err) => reject({status: false, message: 'Could not delete user from user.'}))
                 })
                 .catch((err) => reject({status: false, message: 'Could not delete user from user and settings.'}))
+            })
+        })
+    }
+
+    managerUpdateUser(manId, data) {
+        console.log(data)
+        return new Promise((resolve, reject) => {
+            // Update user information
+            this.isAuthenticated(manId).then((auth) => {
+                if(!auth) {
+                    resolve({status: false, message: 'Unauthorized action.'})
+                }
+                if(data.input.name != "undefined") {
+                    this.users.updateName(data.input.id, data.input.name)
+                }
+                if(data.input.email != "undefined") {
+                    this.users.updateEmail(data.input.id, data.input.email)
+                }
+                if(data.input.password != "undefined") {
+                    this.users.updatePassword(data.input.id, data.input.password)
+                }
+                if(data.input.picture != "undefined") {
+                    this.users.updatePicture(data.input.id, data.input.picture)
+                }
+                resolve({status: true, message: 'Success!'})
             })
         })
     }

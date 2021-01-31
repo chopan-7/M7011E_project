@@ -7,34 +7,24 @@ const cookies = new Cookies()
 const jwt = require("jsonwebtoken")
 
 const ProsumerControll = () =>{
-    // const [buy_ratio, setBuyratio] = useState('');
-    // const [sell_ratio, setSellratio] = useState('');
-
-    const [values, setValues] = useState({
-        buy_ratio: '',
-        sell_ratio: '',
-        new_buy_ratio: '',
-        new_sell_ratio: ''
-    })
-
+    const [buy_ratio, setBuyRatio] = useState()
+    const [sell_ratio, setSellRatio] = useState()
 
     useEffect(() => { 
         getRatios()
-        //setInterval(()=>{getRatios()},10000)
     }, [])
 
-    const ChangeRatio = e => {
-        const {name, value} = e.target
-        setValues({
-            ...values,
-            [name]: value
-        })
+    const updateBuy = (e) => {
+        const update = new Promise((resolve, reject) => resolve(setBuyRatio(e.target.value/100)))
+        update.then(()=> bufferSubmit())
     }
 
-    
+    const updateSell = (e) => {
+        const update = new Promise((resolve, reject) => resolve(setSellRatio(e.target.value/100)))
+        update.then(()=> bufferSubmit()) 
+    }
 
     const getRatios = () => {
-
         const getToken = cookies.get('accessToken')
         const tokendata = jwt.verify(getToken, "Security is always excessive until it's not enough.")
         axios({
@@ -46,32 +36,19 @@ const ProsumerControll = () =>{
                         access:"${getToken}"
                     }){
                         buy_ratio
-                        sell_ratio
-                                                
+                        sell_ratio                     
                     }
                 }`
             }
         })
         .then((response) => {
-            
-
             const data = response.data.data.prosumerData 
-            
-            setValues({
-                buy_ratio: data.buy_ratio.toFixed(2), 
-                sell_ratio: data.sell_ratio.toFixed(2),
-                new_buy_ratio: (data.buy_ratio*100),
-                new_sell_ratio: (data.sell_ratio*100)
-            })
-            
-            // setBuyratio(data.buy_ratio)
-            // setSellratio(data.sell_ratio)
-            
+            setBuyRatio(data.buy_ratio.toFixed(2))
+            setSellRatio(data.sell_ratio.toFixed(2))
         })        
-
     }
+
     const bufferSubmit = () => {
-        
         const getToken = cookies.get('accessToken')
         const tokendata = jwt.verify(getToken, "Security is always excessive until it's not enough.")
         axios({
@@ -81,8 +58,8 @@ const ProsumerControll = () =>{
                 
                 query: `mutation {
                     setBufferRatio(id: ${tokendata.userid}, input: {
-                      buy: ${(values.new_buy_ratio)/100}
-                      sell: ${(values.new_sell_ratio)/100}
+                      buy: ${buy_ratio}
+                      sell: ${sell_ratio}
                       token: "${getToken}"
                     }) {
                       status
@@ -92,9 +69,6 @@ const ProsumerControll = () =>{
             } 
 
         })
-        getRatios()
-        // setSubmitting(true);
-        
     }
 
     return (
@@ -103,8 +77,8 @@ const ProsumerControll = () =>{
             <Card>
                 <Card.Header>Prosumer controll</Card.Header>
                 <Card.Body>
-                    <p> Current buy ratio: {(values.buy_ratio)*100+"%"} </p>
-                    <p> Current sell ratio: {(values.sell_ratio)*100+"%"} </p>
+                    <p> Current buy ratio: {(buy_ratio)*100+"%"} </p>
+                    <p> Current sell ratio: {(sell_ratio)*100+"%"} </p>
                     <form className="buffers" onSubmit={bufferSubmit}>
                         <div>                
                             <label>
@@ -115,9 +89,11 @@ const ProsumerControll = () =>{
                                 min = "0"
                                 max = "100"
                                 step = "1"
-                                value = {values.new_buy_ratio}
-                                name="new_buy_ratio"
-                                onChange={ChangeRatio}
+                                value = {buy_ratio*100}
+                                name="buy_ratio"
+                                onChange={(e) => {
+                                    updateBuy(e)
+                                }}
                             />
                             <label>
                             %
@@ -134,9 +110,11 @@ const ProsumerControll = () =>{
                                 min = "0"
                                 max = "100"
                                 step = "1"
-                                value = {values.new_sell_ratio}
-                                name="new_sell_ratio"
-                                onChange={ChangeRatio}
+                                value = {sell_ratio*100}
+                                name="sell_ratio"
+                                onChange={(e) => {
+                                    updateSell(e)
+                                }}
                             />
                             <label>
                             %

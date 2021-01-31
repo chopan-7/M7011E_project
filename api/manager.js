@@ -66,6 +66,15 @@ var managerSchema = buildSchema(`
         picture: String
     }
 
+    input UpdateUserData {
+        tokenInput: inputTokens!
+        id: Int!
+        name: String!
+        email: String!
+        password: String
+        picture: String
+    }
+
     type Mutation {
         startProduction(id: Int!, input: inputTokens): StatusMsg!
         authenticate(email: String!, password: String!): AuthMsg!
@@ -76,6 +85,7 @@ var managerSchema = buildSchema(`
         drainMarket(id: Int!, amount: Float!, input: inputTokens): MarketMsg
         blockUser(id: Int!, time: Int!, input: inputTokens): StatusMsg!
         deleteUser(id: Int!, input: inputTokens): StatusMsg!
+        updateUser(input: UpdateUserData): StatusMsg!
         register(input: RegisterUserData): Boolean!
     }
     `);
@@ -156,9 +166,17 @@ var managerRoot = {
             return manager.managerDeleteUser(args.id, getToken.data.id)
         }
     },
+    updateUser: (args) => {
+        const getToken = verifyToken(args.input.tokenInput.access)
+        if(getToken.verified) {
+            return manager.managerUpdateUser(getToken.data.id, args)
+        } else {
+            return({status: false, message: 'Insvalid token.'})
+        }
+    },
     register: (args) => {
         return manager.registerManager(args)
-    }
+    },
   }
 
 router

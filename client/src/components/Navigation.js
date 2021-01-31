@@ -44,7 +44,6 @@ const Navigation = (props) => {
 const logoff = (from) => {
    // stop all intervals
    clearJobsFromCookie()
-
    // sign off user
    const getToken = getFromCookie('accessToken')
    axios({
