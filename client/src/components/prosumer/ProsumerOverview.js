@@ -3,11 +3,11 @@ import axios from "axios"
 import {addJobToCookie} from '../cookieHandler'
 
 import getFromCookie from '../tokenHandler'
-import { Card, Container } from 'react-bootstrap'
+import { Card, Container, Image } from 'react-bootstrap'
 
 
 const ProsumerOverview = () =>{
-
+    const [picture, setPicture] = useState('')
     const [production, setProduction] = useState('');
     const [consumption, setConsumption] = useState('');
     const [buffer, setBuffer] = useState('');
@@ -79,6 +79,7 @@ const ProsumerOverview = () =>{
                         access:"${getToken.token}"
                     }){
                         state
+                        picture
                                                                                                 
                     }
                 }`
@@ -87,10 +88,12 @@ const ProsumerOverview = () =>{
         .then((response3) => {
             const data3 = response3.data.data.getProsumerInfo 
             setProductionState(data3.state)
+            setPicture(data3.picture)
 
         })
         
     }
+    
    
     
     return (
@@ -99,6 +102,8 @@ const ProsumerOverview = () =>{
             <Card>
                 <Card.Header>Prosumer overview</Card.Header>
                 <Card.Body>
+                <Image src={picture?picture:picture} thumbnail/>
+                
                     <p>Current state: {state} </p> 
                     <p>Current wind: {wind} m/s </p>
                     <p>Current production: {production} kwh </p> 
