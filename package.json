@@ -34,6 +34,7 @@
     "jwks-rsa": "^1.12.2",
     "morgan": "~1.9.1",
     "node-fetch": "^2.6.1",
+    "random-words": "^1.1.1",
     "react-bootstrap": "^1.4.3",
     "react-router-dom": "^5.2.0",
     "sqlite3": "^5.0.0"

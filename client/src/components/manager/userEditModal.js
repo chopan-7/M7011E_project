@@ -5,8 +5,6 @@ const axios = require('axios')
 
 function UserEditModal(props) {
     const [show, setShow] = useState(false);
-    const [jobId, setJobId] = useState();
-
     const [userData, setUserData] = useState({
         id: '',
         name: '',
@@ -59,20 +57,21 @@ function UserEditModal(props) {
               `
           }
       })
-      
+      // update parent component
+      props.onChange(this.userData)
       handleClose()
       e.preventDefault();
     }
 
     const validate = () => {
-      return userData.password != userData.cnfpass || userData.name < 2
+      return userData.password !== userData.cnfpass || userData.name < 2
     }
   
     // get user info and data
     const getUserData = () => {
         const getToken = getFromCookie('accessToken')
         var fetchData
-        if(props.type=='prosumer') {
+        if(props.type==='prosumer') {
           fetchData = axios({
               method: 'post',
               url: '/api/prosumer',
@@ -107,7 +106,7 @@ function UserEditModal(props) {
         }
 
         fetchData.then((res) => {
-            const info = props.type=='prosumer'?res.data.data.getProsumerInfo:res.data.data.managerInfo
+            const info = props.type==='prosumer'?res.data.data.getProsumerInfo:res.data.data.managerInfo
             setUserData({
                 id: info.id,
                 name: info.name,
@@ -148,8 +147,8 @@ function UserEditModal(props) {
                 <Form.Group controlId="formPassword">
                   <Form.Label>Confirm new password</Form.Label>
                   <Form.Control type="password" name={'cnfpass'} placeholder="Password" onChange={handleChange}/>
-                  <Alert variant={'danger'} show={userData.password!=userData.cnfpass}>
-                    {userData.password!=userData.cnfpass?'New password doesn\'t match':''}
+                  <Alert variant={'danger'} show={userData.password!==userData.cnfpass}>
+                    {userData.password!==userData.cnfpass?'New password doesn\'t match':''}
                   </Alert>
                 </Form.Group>
                 <Button variant="primary" size="sm" type="submit" disabled={validate()}>

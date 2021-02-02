@@ -130,8 +130,8 @@ class UserTable extends React.Component {
       <>
       <Container fluid>
       <Card id={'userList'}>
-      <Card.Header>Users</Card.Header>
-        <Card.Body>
+      <Card.Header>Prosumers</Card.Header>
+        <Card.Body style={{padding: 0}}>
           <Table striped bordered hover size={'sm'}>
             <thead>
               <tr>

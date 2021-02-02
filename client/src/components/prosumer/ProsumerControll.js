@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import axios from "axios"
 import Cookies from 'universal-cookie'
-import { Card, Container, Button } from 'react-bootstrap'
+import { Card, Container, Form } from 'react-bootstrap'
 
 const cookies = new Cookies()
 const jwt = require("jsonwebtoken")
@@ -10,19 +10,15 @@ const ProsumerControll = () =>{
     const [buy_ratio, setBuyRatio] = useState()
     const [sell_ratio, setSellRatio] = useState()
 
+    // get values on render
     useEffect(() => { 
         getRatios()
     }, [])
 
-    const updateBuy = (e) => {
-        const update = new Promise((resolve, reject) => resolve(setBuyRatio(e.target.value/100)))
-        update.then(()=> bufferSubmit())
-    }
-
-    const updateSell = (e) => {
-        const update = new Promise((resolve, reject) => resolve(setSellRatio(e.target.value/100)))
-        update.then(()=> bufferSubmit()) 
-    }
+    // update submit reactivly
+    useEffect(() => {
+        bufferSubmit()
+    }, [buy_ratio, sell_ratio])
 
     const getRatios = () => {
         const getToken = cookies.get('accessToken')
@@ -43,8 +39,8 @@ const ProsumerControll = () =>{
         })
         .then((response) => {
             const data = response.data.data.prosumerData 
-            setBuyRatio(data.buy_ratio.toFixed(2))
-            setSellRatio(data.sell_ratio.toFixed(2))
+            setBuyRatio(data.buy_ratio)
+            setSellRatio(data.sell_ratio)
         })        
     }
 
@@ -77,56 +73,28 @@ const ProsumerControll = () =>{
             <Card>
                 <Card.Header>Prosumer controll</Card.Header>
                 <Card.Body>
-                    <p> Current buy ratio: {(buy_ratio)*100+"%"} </p>
-                    <p> Current sell ratio: {(sell_ratio)*100+"%"} </p>
-                    <form className="buffers" onSubmit={bufferSubmit}>
-                        <div>                
-                            <label>
-                            Change buy ratio to: 
-                            </label>
-                            <input                    
-                                type = "number"                
-                                min = "0"
-                                max = "100"
-                                step = "1"
-                                value = {buy_ratio*100}
-                                name="buy_ratio"
-                                onChange={(e) => {
-                                    updateBuy(e)
-                                }}
-                            />
-                            <label>
-                            %
-                            </label>
-
-                        </div>
-
-                        <div>                
-                            <label>
-                            Change sell ratio to:
-                            </label>
-                            <input
-                                type = "number"                
-                                min = "0"
-                                max = "100"
-                                step = "1"
-                                value = {sell_ratio*100}
-                                name="sell_ratio"
-                                onChange={(e) => {
-                                    updateSell(e)
-                                }}
-                            />
-                            <label>
-                            %
-                            </label>        
-                        </div>
-                        <Button type = "submit" variant={'primary'} size={'sm'}>Save</Button>
-                    </form>
+                    <Form>
+                        <Form.Row>
+                            <Form.Group controlId="buy_ratio" style={{marginRight: 50}}>
+                                <Form.Label>Buy ratio: {Math.floor(buy_ratio*100)}%</Form.Label>
+                                <Form.Control type="range" name="buy_ratio" value={buy_ratio} 
+                                min="0" max="1" step="0.01" custom 
+                                onChange={e => setBuyRatio(e.target.value)}/>
+                            </Form.Group>
+                        </Form.Row>
+                        <Form.Row>
+                            <Form.Group controlId="sell_ratio">
+                                <Form.Label>Sell ratio: {Math.floor(sell_ratio*100)}%</Form.Label>
+                                <Form.Control type="range" name="sell_ratio" value = {sell_ratio} 
+                                min="0" max="1" step="0.01" custom 
+                                onChange={e => setSellRatio(e.target.value)}/>
+                            </Form.Group>
+                        </Form.Row>
+                    </Form>
                 </Card.Body>
             </Card>
         </Container>
-        </>
-        
+        </>  
     )
 
 

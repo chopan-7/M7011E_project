@@ -16,6 +16,9 @@ var managerSchema = buildSchema(`
         currentPrice: Float!
         marketDemand: Float!
         prosumerOutage: Int!
+        prosumerCount: Int!
+        consumerCount: Int!
+        managerCount: Int!
     }
 
     type ManagerInfo {
@@ -69,8 +72,8 @@ var managerSchema = buildSchema(`
     input UpdateUserData {
         tokenInput: inputTokens!
         id: Int!
-        name: String!
-        email: String!
+        name: String
+        email: String
         password: String
         picture: String
     }
@@ -87,6 +90,9 @@ var managerSchema = buildSchema(`
         deleteUser(id: Int!, input: inputTokens): StatusMsg!
         updateUser(input: UpdateUserData): StatusMsg!
         register(input: RegisterUserData): Boolean!
+        addConsumer(input: inputTokens): StatusMsg!
+        addProsumer(input: inputTokens): StatusMsg!
+        removeConsumer(input: inputTokens): StatusMsg!
     }
     `);
 
@@ -177,6 +183,30 @@ var managerRoot = {
     register: (args) => {
         return manager.registerManager(args)
     },
+    addConsumer: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.addUser(getToken.data.id, 'consumer')
+        } else {
+            return({status: false, message: 'Insvalid token.'})
+        }
+    },
+    addProsumer: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.addUser(getToken.data.id, 'prosumer')
+        } else {
+            return({status: false, message: 'Insvalid token.'})
+        }
+    },
+    removeConsumer: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.removeConsumer(getToken.data.id)
+        } else {
+            return({status: false, message: 'Insvalid token.'})
+        }
+    }
   }
 
 router
