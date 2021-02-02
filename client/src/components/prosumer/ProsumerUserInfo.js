@@ -112,7 +112,7 @@ const ProsumerUserInfo = () =>{
                     </Card.Text>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group>
-                            <Form.File name={'picture'} accept={'image/*'} onChange={uploadPicture} label="Upload new picture" />
+                            <Form.File name={'newPic'} accept={'image/*'} onChange={uploadPicture} label="Upload new picture" />
                         </Form.Group>
                         <Button type={'submit'} variant={'primary'} disabled={!validateForm()}>Save</Button>
                     </Form>

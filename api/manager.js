@@ -16,6 +16,9 @@ var managerSchema = buildSchema(`
         currentPrice: Float!
         marketDemand: Float!
         prosumerOutage: Int!
+        prosumerCount: Int!
+        consumerCount: Int!
+        managerCount: Int!
     }
 
     type ManagerInfo {
@@ -66,6 +69,15 @@ var managerSchema = buildSchema(`
         picture: String
     }
 
+    input UpdateUserData {
+        tokenInput: inputTokens!
+        id: Int!
+        name: String
+        email: String
+        password: String
+        picture: String
+    }
+
     type Mutation {
         startProduction(id: Int!, input: inputTokens): StatusMsg!
         authenticate(email: String!, password: String!): AuthMsg!
@@ -76,7 +88,11 @@ var managerSchema = buildSchema(`
         drainMarket(id: Int!, amount: Float!, input: inputTokens): MarketMsg
         blockUser(id: Int!, time: Int!, input: inputTokens): StatusMsg!
         deleteUser(id: Int!, input: inputTokens): StatusMsg!
+        updateUser(input: UpdateUserData): StatusMsg!
         register(input: RegisterUserData): Boolean!
+        addConsumer(input: inputTokens): StatusMsg!
+        addProsumer(input: inputTokens): StatusMsg!
+        removeConsumer(input: inputTokens): StatusMsg!
     }
     `);
 
@@ -156,8 +172,40 @@ var managerRoot = {
             return manager.managerDeleteUser(args.id, getToken.data.id)
         }
     },
+    updateUser: (args) => {
+        const getToken = verifyToken(args.input.tokenInput.access)
+        if(getToken.verified) {
+            return manager.managerUpdateUser(getToken.data.id, args)
+        } else {
+            return({status: false, message: 'Insvalid token.'})
+        }
+    },
     register: (args) => {
         return manager.registerManager(args)
+    },
+    addConsumer: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.addUser(getToken.data.id, 'consumer')
+        } else {
+            return({status: false, message: 'Insvalid token.'})
+        }
+    },
+    addProsumer: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.addUser(getToken.data.id, 'prosumer')
+        } else {
+            return({status: false, message: 'Insvalid token.'})
+        }
+    },
+    removeConsumer: (args) => {
+        const getToken = verifyToken(args.input.access)
+        if(getToken.verified) {
+            return manager.removeConsumer(getToken.data.id)
+        } else {
+            return({status: false, message: 'Insvalid token.'})
+        }
     }
   }
 

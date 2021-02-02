@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
-import {Button, Container, Modal} from 'react-bootstrap'
-import {Col, Row} from 'react-bootstrap'
+import {Button, Card, Container, Col, Row, Modal, Image} from 'react-bootstrap'
 import getFromCookie from '../tokenHandler'
+import UserEditModal from './userEditModal'
 const axios = require('axios')
 
 function UserModal(props) {
@@ -14,6 +14,7 @@ function UserModal(props) {
         email: '',
         role:'',
         state: '',
+        picture: '',
         online: '',
         production: '',
         consumption: '',
@@ -49,6 +50,7 @@ function UserModal(props) {
                         email
                         role
                         state
+                        picture
                     }
                     prosumerData(id: ${props.userid}, input: {access: "${getToken.token}"})
                     {
@@ -71,6 +73,7 @@ function UserModal(props) {
                 email: info.email,
                 role: info.role,
                 state: info.state,
+                picture: info.picture,
                 online: info.online,
                 production: data.production.toFixed(2),
                 consumption: data.consumption.toFixed(2),
@@ -85,7 +88,7 @@ function UserModal(props) {
     return (
       <>
         <Button variant="primary" size="sm" style={{ marginRight: 10 }} onClick={handleShow}>
-          View
+          View / Edit
         </Button>
   
         <Modal
@@ -93,25 +96,53 @@ function UserModal(props) {
           onHide={handleClose}
           backdrop="static"
           keyboard={false}
+          size="lg"
         >
           <Modal.Header closeButton>
-            <Modal.Title>#{props.userid} {userData.name}</Modal.Title>
+            <Modal.Title>View / Edit</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Container>
-                <Row>
-                    <Col>
-                        <p>Production: {userData.production} kWh</p>
-                        <p>Consumption: {userData.consumption} kWh</p>
-                        <p>Wind: {userData.wind} m/s</p>
+            <Card className="prosumerInfo" style={{margin: 5}}>
+              <Card.Header>Prosumer info</Card.Header>
+              <Card.Body>
+                <Container>
+                  <Row>
+                    <Col xs={6} md={4}>
+                      <Image src={userData.picture} thumbnail/>
                     </Col>
-                    <Col>
-                        <p>Buffer: {userData.buffer} kWh</p>
-                        <p>Buy ratio: {userData.buy_ratio*100} %</p>
-                        <p>Sell ratio: {userData.sell_ratio*100} %</p>
+                    <Col xs={6} md={4}>
+                      <p>Prosumer id: {userData.id}</p>
+                      <p>Name: {userData.name}</p>
+                      <p>Email: {userData.email}</p>
                     </Col>
-                </Row>
-            </Container>
+                  </Row>
+                  <Row>
+                    <Col style={{marginTop: 5}}>
+                      <UserEditModal userid={userData.id} type={'prosumer'}/>
+                    </Col>
+                  </Row>
+                </Container>
+              </Card.Body>
+            </Card>
+            <Card className="prosumerData" style={{margin: 5}}>
+              <Card.Header>Prosumer data</Card.Header>
+              <Card.Body>
+                <Container>
+                  <Row>
+                      <Col>
+                          <p>Production: {userData.production} kWh</p>
+                          <p>Consumption: {userData.consumption} kWh</p>
+                          <p>Wind: {userData.wind} m/s</p>
+                      </Col>
+                      <Col>
+                          <p>Buffer: {userData.buffer} kWh</p>
+                          <p>Buy ratio: {userData.buy_ratio*100} %</p>
+                          <p>Sell ratio: {userData.sell_ratio*100} %</p>
+                      </Col>
+                  </Row>
+                </Container>
+              </Card.Body>
+            </Card>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

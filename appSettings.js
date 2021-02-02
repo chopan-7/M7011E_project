@@ -42,6 +42,27 @@ const AppSettings = {
         "startupTime": 30000, // 30 sec to start/stop the coal plant
         "bufferCap": 1000000, // 1e6 kWh
         "production": 41500   // 41500 kWh production per hour
+    },
+
+    // Consumer (default)
+    "consumer": {
+        info: {
+            "name": "Consumer1",
+            "email": "c1@greenlight.org",
+            "password": "c1",
+            "picture": "c1.jpg",
+            "role": 1,
+            "location": "luleå",
+            "online": 0
+        },
+        settings: {
+            "buffer": "",
+            "buy_ratio": 0.5,
+            "sell_ratio": 0.5,
+            "consumption": 500,
+            "production": 4.0,
+            "state":2
+        }
     }
 }
 
