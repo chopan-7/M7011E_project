@@ -1,6 +1,7 @@
 const AppSettings = require("../../appSettings")
 const {databaseManager} = require("../data-fetcher")
 const jwt = require('jsonwebtoken')
+const {generateConsumer} = require('./consumerGenerator')
 
 class Manager {
     constructor(){
@@ -164,7 +165,24 @@ class Manager {
         // return this.data
         return new Promise((resolve, reject) => {
             this.isAuthenticated(id).then((auth) =>{
+                var returnData = this.data
                 if(auth){
+                    AppSettings.database.roles.forEach(async (role) => {
+                        await this.users.countUsers(AppSettings.database.roles.indexOf(role)).then((count) => {
+                            switch(role) {
+                                case "prosumer":
+                                    returnData.prosumerCount = count['COUNT(id)']
+                                    break;
+                                case "consumer":
+                                    returnData.consumerCount = count['COUNT(id)']
+                                    break;
+                                case "manager":
+                                    returnData.managerCount = count['COUNT(id)']
+                                    break;
+                            }
+                        })
+                    })
+
                     resolve(this.data)
                 }else{
                     reject("No access to data")
@@ -235,6 +253,31 @@ class Manager {
         })
     }
 
+    managerUpdateUser(manId, data) {
+        console.log(data)
+        return new Promise((resolve, reject) => {
+            // Update user information
+            this.isAuthenticated(manId).then((auth) => {
+                if(!auth) {
+                    resolve({status: false, message: 'Unauthorized action.'})
+                }
+                if(data.input.name != "undefined") {
+                    this.users.updateName(data.input.id, data.input.name)
+                }
+                if(data.input.email != "undefined") {
+                    this.users.updateEmail(data.input.id, data.input.email)
+                }
+                if(data.input.password != "undefined") {
+                    this.users.updatePassword(data.input.id, data.input.password)
+                }
+                if(data.input.picture != "undefined") {
+                    this.users.updatePicture(data.input.id, data.input.picture)
+                }
+                resolve({status: true, message: 'Success!'})
+            })
+        })
+    }
+
     managerStartStop(id) {
         // start/stop production depending on current state
         return new Promise((resolve, reject) => {
@@ -293,7 +336,6 @@ class Manager {
                 resolve(res)
             })
         })
-
     }
 
     registerManager(args) {
@@ -314,6 +356,80 @@ class Manager {
             } else {
                 resolve(false)
             }
+        })
+    }
+
+    addUser(manId, role) {
+        // check if manager authenticated
+        return new Promise((resolve, reject) => {
+            this.isAuthenticated(manId).then((auth) => {
+                var res = {"status": false, "message": undefined}
+                if(auth){
+                    // add consumer/prosumer with standard settings
+                    var {name, email} = generateConsumer()
+                    var newConsumer = AppSettings.consumer
+                    newConsumer.info.name = name
+                    newConsumer.info.email = email
+                    console.log(newConsumer)
+                    var createConsumer = this.users.create(
+                        newConsumer.info.name,
+                        newConsumer.info.email,
+                        "1111",
+                        newConsumer.info.picture,
+                        AppSettings.database.roles.indexOf(role),
+                        newConsumer.info.location,
+                        0
+                    )
+                    createConsumer.then((newUser) => {
+                            console.log(newUser.id)
+                            this.uSettings.create(
+                                newUser.id,
+                                newConsumer.settings.buffer,
+                                newConsumer.settings.buy_ratio,
+                                newConsumer.settings.sell_ratio,
+                                newConsumer.settings.consumption,
+                                newConsumer.settings.production,
+                                newConsumer.settings.state
+                            ).then((newSettings) => {
+                                res.status = true
+                                res.message = "New user created."
+                                resolve(res)
+                            })
+                        })
+                } else {
+                    res.message = "No permission to perform action"
+                    resolve(res)
+                }
+                
+            })
+        })
+    }
+
+    removeConsumer(manId) {
+        // check if manager authenticated
+        return new Promise((resolve, reject) => {
+            this.isAuthenticated(manId).then((auth) => {
+                var res = {"status": false, "message": undefined}
+                if(auth){
+                    // remove consumer
+                    this.users.getAllWhere(`role=${AppSettings.database.roles.indexOf('consumer')} order by id desc`)
+                    .then((userList) => {
+                        var deleteUser = userList[0]
+                        console.log(deleteUser.id)
+                        this.users.delete(deleteUser.id).then(() => {
+                            this.uSettings.delete(deleteUser.id).then(() => {
+                                res.message = "Consumer deleted"
+                                res.status = true
+                                resolve(res)
+                            })
+                        })
+                    })
+                } else {
+                    res.message = "No permission to perform action"
+                    resolve(res)
+                }
+                
+            })
         })
     }
 

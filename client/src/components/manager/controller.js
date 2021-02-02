@@ -214,13 +214,13 @@ class Controller extends React.Component {
                                 </Form.Group>
                                 </Form.Row>
                                 <Form.Row>
-                                    <Button variant="primary" type="submit">Save settings</Button>
+                                    <Button variant={this.state.production_state === 0?'success':'danger'} onClick={() => this.handleStartStop()}>{this.state.production_state === 0?'Start production':'Stop production'}</Button>
+                                    <Button variant="primary" type="submit" style={{marginLeft: 10}}>Save settings</Button>
                                 </Form.Row>
                                 <Alert variant={this.state.alert} show={this.state.alertShow} onClick={() => this.setState({alertShow: false})}>
                                     {this.state.alertMessage}
                                 </Alert>
                             </Form>
-                            <Button variant={this.state.production_state === 0?'success':'danger'} onClick={() => this.handleStartStop()}>{this.state.production_state === 0?'Start production':'Stop production'}</Button>
                         </Card.Body>
                     </Card>
                     </Col>

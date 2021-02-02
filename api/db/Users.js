@@ -59,7 +59,15 @@ class Users {
 
     // generic update
     update(columns, condition) {
-        return this.dao.run(`UPDATE Users SET ? WHERE ?`),[columns, condition]
+        return this.dao.run(`UPDATE Users SET ? WHERE ?`,[columns, condition])
+    }
+
+    // Update picture
+    updateName(id, name) {
+        return this.dao.run(
+            `UPDATE Users SET name = ? WHERE id = ?`,
+            [name, id]
+        )
     }
 
     // Update picture
@@ -74,7 +82,7 @@ class Users {
     updatePassword(id, password) {
         return this.dao.run(
             `UPDATE Users SET password = ? WHERE id = ?`,
-            [id, password]
+            [password, id]
         )
     }
 
@@ -82,7 +90,7 @@ class Users {
     updateEmail(id, email) {
         return this.dao.run(
             `UPDATE Users SET email = ? WHERE id = ?`,
-            [id, email]
+            [email, id]
         )
     }
 

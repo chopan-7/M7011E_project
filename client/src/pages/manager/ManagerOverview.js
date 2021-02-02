@@ -8,8 +8,8 @@ class ManagerOverview extends React.Component {
     return(
       <div className="ManagerOverview">
         <Navigation type="manager" />
-        <Controller />
         <ManagerInfo />
+        <Controller />
     </div>
     )
   }
