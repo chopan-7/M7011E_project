@@ -198,6 +198,9 @@ class Controller extends React.Component {
             <Container fluid>
                 <Row className="justify-content-md-center">
                     <Col>
+                        <Overview plantState={this.state.production_stateText} currentPrice={this.state.marketPrice}/>   
+                    </Col>
+                    <Col>
                     <Card id={'controll'}>
                         <Card.Header>Coal plant controll</Card.Header>
                         <Card.Body>
@@ -223,9 +226,6 @@ class Controller extends React.Component {
                             </Form>
                         </Card.Body>
                     </Card>
-                    </Col>
-                    <Col>
-                    <Overview plantState={this.state.production_stateText} currentPrice={this.state.marketPrice}/>   
                     </Col>
                 </Row>
             </Container>

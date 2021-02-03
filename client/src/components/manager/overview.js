@@ -45,11 +45,11 @@ class Overview extends React.Component {
         .then((response) => {
             const data = response.data.data.managerData
             this.setState({
-                currentProduction: data.currentProduction,
-                marketDemand: data.marketDemand,
+                currentProduction: data.currentProduction.toFixed(2),
+                marketDemand: data.marketDemand.toFixed(2),
                 prosumerOutage: data.prosumerOutage,
-                currentMarketPrice: data.currentPrice,
-                buffer: data.buffer
+                currentMarketPrice: data.currentPrice.toFixed(2),
+                buffer: data.buffer.toFixed(2)
             })
         })
         axios({
@@ -65,7 +65,7 @@ class Overview extends React.Component {
         })
         .then((res) => {
             const data = res.data.data.simulate
-            this.setState({suggestedPrice: data.suggestedPrice})
+            this.setState({suggestedPrice: data.suggestedPrice.toFixed(2)})
         })
     }
 
@@ -76,13 +76,16 @@ class Overview extends React.Component {
               <Card.Header>Coal plant overview</Card.Header>
               <Card.Body>
                 <Card.Text>
+                    <h3>Coal plant status</h3>
                     <p>State: {this.props.plantState}</p>
-                    <p>Current production to market: {this.state.currentProduction}</p>
-                    <p>Market demand: {this.state.marketDemand}</p>
+                    <p>Buffer: {this.state.buffer} kwh</p>
+                    <p>Current production to market: {this.state.currentProduction} kwh</p>
+
+                    <h3>Market status</h3>
+                    <p>Market demand: {this.state.marketDemand} kwh</p>
                     <p>Prosumer outage: {this.state.prosumerOutage}</p>
-                    <p>Current marketprice: {this.state.currentMarketPrice}</p>
-                    <p>Suggested marketprice: {this.state.suggestedPrice}</p>
-                    <p>Buffer: {this.state.buffer}</p>
+                    <p>Current marketprice: {this.state.currentMarketPrice} kr</p>
+                    <p>Suggested marketprice: {this.state.suggestedPrice} kr</p>
                 </Card.Text>
               </Card.Body>
           </Card>
