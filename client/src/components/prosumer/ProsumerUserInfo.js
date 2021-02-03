@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import getFromCookie from '../tokenHandler'
 import axios from "axios"
-import {Card, Button, Container, Form} from 'react-bootstrap'
+import {Card, Button, Container, Form, Row, Col, Image} from 'react-bootstrap'
 import { store } from 'react-notifications-component';
 
 const ProsumerUserInfo = () =>{
@@ -103,19 +103,29 @@ const ProsumerUserInfo = () =>{
     return (
         <>
         <Container fluid>
-            <Card style={{ width: '50%' }}>
-                <Card.Img variant="top" src={newPic?newPic:picture} />
+            <Card>
+                <Card.Header>
+                    My information
+                </Card.Header>
+                {/* <Card.Img variant="top" src={newPic?newPic:picture}/> */}
                 <Card.Body>
-                    <Card.Title>{name}</Card.Title>
-                    <Card.Text>
-                        <p>Email: {email} </p>
-                    </Card.Text>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group>
-                            <Form.File name={'newPic'} accept={'image/*'} onChange={uploadPicture} label="Upload new picture" />
-                        </Form.Group>
-                        <Button type={'submit'} variant={'primary'} disabled={!validateForm()}>Save</Button>
-                    </Form>
+                    <Row>
+                        <Col>
+                            <Image src={newPic?newPic:picture} thumbnail/>
+                        </Col>
+                        <Col>
+                            <Card.Title>{name}</Card.Title>
+                            <Card.Text>
+                                <p>Email: {email} </p>
+                            </Card.Text>
+                            <Form onSubmit={handleSubmit}>
+                                <Form.Group>
+                                    <Form.File name={'newPic'} accept={'image/*'} onChange={uploadPicture} label="Upload new picture" />
+                                </Form.Group>
+                                <Button type={'submit'} variant={'primary'} disabled={!validateForm()}>Save</Button>
+                            </Form>
+                        </Col>
+                    </Row>
                 </Card.Body>
             </Card>
         </Container>

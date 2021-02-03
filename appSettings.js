@@ -28,7 +28,7 @@ const AppSettings = {
         },
         "consumption": {
             "minConsumption": 0,
-            "maxConsumption": 2
+            "maxConsumption": 500
         }
     },
 

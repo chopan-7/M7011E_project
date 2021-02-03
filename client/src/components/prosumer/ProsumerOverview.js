@@ -3,7 +3,7 @@ import axios from "axios"
 import {addJobToCookie} from '../cookieHandler'
 
 import getFromCookie from '../tokenHandler'
-import { Card, Container, Image } from 'react-bootstrap'
+import { Card, Container, Image, Row, Col } from 'react-bootstrap'
 
 
 const ProsumerOverview = () =>{
@@ -98,19 +98,27 @@ const ProsumerOverview = () =>{
     
     return (
         <>
-        <Container fluid>
+        <Container fluid style={{marginBottom: 10}}>
             <Card>
                 <Card.Header>Prosumer overview</Card.Header>
                 <Card.Body>
-                <Image src={picture?picture:picture} thumbnail/>
-                
-                    <p>Current state: {state} </p> 
-                    <p>Current wind: {wind} m/s </p>
-                    <p>Current production: {production} kwh </p> 
-                    <p>Current consumtion: {consumption} kwh </p>
-                    <p>Current net production: {net_production} kwh </p> 
-                    <p>Current buffer: {buffer} kwh </p> 
-                    <p>Current market price: {currentPrice} kr </p> 
+                    <Row>
+                        <Col>
+                            <Image src={picture?picture:picture} thumbnail/>
+                        </Col>
+                        <Col>
+                            <h3>Wind turbine status</h3>
+                            <p>State: {state} </p> 
+                            <p>Wind: {wind} m/s </p>
+                            <p>Production: {production} kwh </p> 
+
+                            <h3>Household status</h3>
+                            <p>Consumtion: {consumption} kwh </p>
+                            <p>Net production: {net_production} kwh </p> 
+                            <p>Buffer: {buffer} kwh </p> 
+                            <p>Current market price: {currentPrice} kr </p> 
+                        </Col>
+                    </Row>
                 </Card.Body>
             </Card>
         </Container>
