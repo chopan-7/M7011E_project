@@ -75,6 +75,7 @@ class Manager {
     }
 
     signOut(id) {
+        console.log("System signout-->db signout")
         return this.users.signOut(id)
     }
 

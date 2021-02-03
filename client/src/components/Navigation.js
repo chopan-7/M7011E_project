@@ -13,7 +13,7 @@ const Navigation = (props) => {
          <Navbar bg="light" expand="lg">
             <Navbar.Brand href="/prosumer">Greenlight simulator</Navbar.Brand>
             <Nav.Link href="/prosumer" style={{ marginRight: 10 }}>Overview</Nav.Link>
-            <Nav.Link href="/prosumer_user" style={{ marginRight: 10 }}>User settings</Nav.Link>
+            <Nav.Link href="/prosumer_user" style={{ marginRight: 10 }}>Prosumer profile</Nav.Link>
             <Nav.Link href="/logoff" onClick={() => logoff(props.type)} style={{ marginRight: 10 }}>Logout</Nav.Link>
          </Navbar>
       )
@@ -22,7 +22,7 @@ const Navigation = (props) => {
          <Navbar bg="light" expand="lg">
             <Navbar.Brand href="/manager">Greenlight simulator</Navbar.Brand>
             <Nav.Link href="/manager" style={{ marginRight: 10 }}>Overview</Nav.Link>
-            <Nav.Link href="/manager_users" style={{ marginRight: 10 }}>User settings</Nav.Link>
+            <Nav.Link href="/manager_users" style={{ marginRight: 10 }}>Prosumer overview</Nav.Link>
             <Nav.Link href="/logoff" onClick={() => logoff(props.type)} style={{ marginRight: 10 }}>Logout</Nav.Link>
          </Navbar>
       )
@@ -48,7 +48,7 @@ const logoff = (from) => {
    const getToken = getFromCookie('accessToken')
    axios({
       method: 'post',
-      url: 'http://localhost:8000/api/'+from,
+      url: '/api/'+from,
       data: {
          query: `mutation {
             signOut(input: {access: "${getToken.token}"}){

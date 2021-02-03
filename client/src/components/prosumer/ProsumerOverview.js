@@ -115,7 +115,9 @@ const ProsumerOverview = () =>{
                             <h3>Household status</h3>
                             <p>Consumtion: {consumption} kwh </p>
                             <p>Net production: {net_production} kwh </p> 
-                            <p>Buffer: {buffer} kwh </p> 
+                            <p>Buffer: {buffer} kwh </p>
+
+                            <h3>Market info</h3> 
                             <p>Current market price: {currentPrice} kr </p> 
                         </Col>
                     </Row>

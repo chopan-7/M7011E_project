@@ -119,6 +119,7 @@ var managerRoot = {
         return manager.authenticate(args.email, args.password)
     },
     signOut: (args) => {
+        console.log("Backend signout")
         const getToken = verifyToken(args.input.access)
         if(getToken.verified) {
             // signOut user from db

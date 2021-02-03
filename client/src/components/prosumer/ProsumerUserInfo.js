@@ -3,14 +3,17 @@ import getFromCookie from '../tokenHandler'
 import axios from "axios"
 import {Card, Button, Container, Form, Row, Col, Image} from 'react-bootstrap'
 import { store } from 'react-notifications-component';
+import UserEditModal from '../manager/userEditModal'
 
 const ProsumerUserInfo = () =>{
 
+    const [userId, setUserId] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [picture, setPicture] = useState('');
 
     const [newPic, setNewPic] = useState('');
+    const [hideUpload, setHideUpload] = useState(true);
 
     const uploadPicture = async e =>{
         const file = e.target.files[0]
@@ -84,6 +87,7 @@ const ProsumerUserInfo = () =>{
                     getProsumerInfo(id:${getToken.data.userid}, input:{
                         access:"${getToken.token}"
                     }){
+                        id
                         name
                         email
                         picture
@@ -93,6 +97,7 @@ const ProsumerUserInfo = () =>{
         })
         .then((response) => {
             const data = response.data.data.getProsumerInfo 
+            setUserId(data.id)
             setName(data.name)
             setEmail(data.email)
             setPicture(data.picture)
@@ -105,7 +110,7 @@ const ProsumerUserInfo = () =>{
         <Container fluid>
             <Card>
                 <Card.Header>
-                    My information
+                    My profile page
                 </Card.Header>
                 {/* <Card.Img variant="top" src={newPic?newPic:picture}/> */}
                 <Card.Body>
@@ -118,12 +123,18 @@ const ProsumerUserInfo = () =>{
                             <Card.Text>
                                 <p>Email: {email} </p>
                             </Card.Text>
-                            <Form onSubmit={handleSubmit}>
+                            <Form onSubmit={handleSubmit} hidden={hideUpload}>
                                 <Form.Group>
                                     <Form.File name={'newPic'} accept={'image/*'} onChange={uploadPicture} label="Upload new picture" />
                                 </Form.Group>
-                                <Button type={'submit'} variant={'primary'} disabled={!validateForm()}>Save</Button>
+                                {/* <Button type={'submit'} variant={'primary'} disabled={!validateForm()}>Save</Button> */}
                             </Form>
+                            <UserEditModal userid={userId} type={'prosumer'}/>
+                            <Button hidden={hideUpload===false} size="sm" onClick={() => {
+                                setHideUpload(!hideUpload)
+                                }}>Upload new picture</Button>
+                            <Button hidden={hideUpload} size="sm" onClick={handleSubmit} variant={'primary'} disabled={!validateForm()}>Save</Button>
+                            <Button hidden={hideUpload} size="sm" onClick={() => setHideUpload(!hideUpload)} variant={'secondary'} style={{marginLeft: 10}}>Cancel</Button>
                         </Col>
                     </Row>
                 </Card.Body>
